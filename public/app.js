@@ -163,9 +163,18 @@ function showPreview() {
   document.getElementById('close-preview').onclick = () => { cleanup(); render(); window.scrollTo(0, scroll); };
 }
 function dataURL(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); }); }
+let webpSupport;
+function supportsWebP() {
+  if (webpSupport === undefined) { const c = document.createElement('canvas'); c.width = c.height = 1; webpSupport = c.toDataURL('image/webp').startsWith('data:image/webp'); }
+  return webpSupport;
+}
 async function resizePhoto(file) {
   const image = await createImageBitmap(file); const ratio = Math.min(1, 1800 / Math.max(image.width, image.height));
-  const canvas = document.createElement('canvas'); canvas.width = Math.round(image.width * ratio); canvas.height = Math.round(image.height * ratio); canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height); image.close(); return canvas.toDataURL('image/jpeg', .86);
+  const canvas = document.createElement('canvas'); canvas.width = Math.round(image.width * ratio); canvas.height = Math.round(image.height * ratio); canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height); image.close();
+  const format = supportsWebP() ? 'image/webp' : 'image/jpeg';
+  let quality = .86, url = canvas.toDataURL(format, quality);
+  while (url.length * .75 > 700 * 1024 && quality > .55) { quality -= .08; url = canvas.toDataURL(format, quality); }
+  return url;
 }
 function downloadFile(content, name, type) { const url = URL.createObjectURL(new Blob([content], { type })); const a = document.createElement('a'); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 30000); }
 async function exportGift() {
