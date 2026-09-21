@@ -4,28 +4,26 @@ export function installOpening(root, { onReveal, musicEl }) {
   const stage = root.querySelector('.story-stage');
   const heart = root.querySelector('.heart-button');
   const hint = root.querySelector('.heart-hint');
-  const shape = root.querySelector('.reveal-shape');
   const sound = root.querySelector('#with-sound');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let taps = 0, opening = false, finished = false, disposed = false, audioContext, raf, finishTimer;
+  let taps = 0, opening = false, finished = false, disposed = false, audioContext, finishTimer;
   const timeouts = new Set();
   const later = (fn, ms) => { const id = setTimeout(() => { timeouts.delete(id); if (!disposed) fn(); }, ms); timeouts.add(id); return id; };
   const vibrate = pattern => { try { navigator.vibrate?.(pattern); } catch {} };
   const unlockAudio = () => {
-    if (!sound.checked) return Promise.resolve(null);
+    if (!sound.checked) return;
     try {
       const Audio = window.AudioContext || window.webkitAudioContext;
       if (!audioContext && Audio) audioContext = new Audio();
-      if (!audioContext) return Promise.resolve(null);
-      if (audioContext.state === 'suspended') return audioContext.resume().then(() => audioContext).catch(() => audioContext);
-      return Promise.resolve(audioContext);
-    } catch { return Promise.resolve(null); }
+      if (audioContext && audioContext.state === 'suspended') audioContext.resume().catch(() => {});
+    } catch {}
   };
   const beat = index => {
+    unlockAudio();
     const pulse = [18, 28, 40][index - 1];
     if (!reduced.matches) vibrate([pulse, 115, Math.round(pulse * .65)]);
-    unlockAudio().then(c => {
-      if (!sound.checked || !c || c.state !== 'running') return;
+    const c = audioContext;
+    if (sound.checked && c && c.state === 'running') {
       for (const [delay, strength] of [[0, 1], [.14, .65]]) {
         const t = c.currentTime + delay, o = c.createOscillator(), gain = c.createGain();
         o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(65, t + .18);
@@ -33,7 +31,7 @@ export function installOpening(root, { onReveal, musicEl }) {
         o.connect(gain); gain.connect(c.destination); o.start(t); o.stop(t + .26);
         o.onended = () => { o.disconnect(); gain.disconnect(); };
       }
-    });
+    }
     heart.style.setProperty('--beat-duration', [1.9, 1.25, .8, .5][index] + 's');
     if (!reduced.matches) heart.animate?.([{ transform: 'scale(1)' }, { transform: `scale(${1.08 + index * .025})`, offset: .2 }, { transform: 'scale(1)', offset: .5 }, { transform: 'scale(1.06)', offset: .7 }, { transform: 'scale(1)' }], { duration: 380 });
   };
@@ -54,35 +52,19 @@ export function installOpening(root, { onReveal, musicEl }) {
 
   const finalize = () => {
     if (disposed || finished) return;
-    finished = true; clearTimeout(finishTimer); cancelAnimationFrame(raf);
-    gate.hidden = true; stage.classList.remove('awaiting', 'revealing'); stage.style.clipPath = ''; stage.style.webkitClipPath = '';
+    finished = true; clearTimeout(finishTimer);
+    gate.hidden = true; stage.classList.remove('awaiting');
     stage.inert = false; stage.removeAttribute('aria-hidden');
     const title = stage.querySelector('h1'); title.tabIndex = -1; title.focus({ preventScroll: true });
-    root.querySelector('.experience').classList.remove('opening-active');
     onReveal();
   };
+  // A fade to black, then a fade in: simple, robust across browsers (unlike an
+  // animated SVG clip-path, which some engines fail to repaint mid-animation).
   const reveal = instant => {
     if (disposed) return;
     if (instant || reduced.matches) { finalize(); return; }
-    const rect = heart.getBoundingClientRect(), parent = stage.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2 - parent.left, cy = rect.top + rect.height / 2 - parent.top;
-    stage.classList.add('revealing');
-    const clip = `url(#${shape.parentElement.id})`;
-    stage.style.clipPath = clip; stage.style.webkitClipPath = clip;
-    root.querySelector('.experience').classList.add('opening-active');
-    const duration = 1800, start = performance.now();
-    const maxScale = Math.max(parent.width, window.innerHeight) * 4 / 100;
-    const frame = now => {
-      if (disposed) return;
-      const progress = Math.min(1, (now - start) / duration);
-      const ease = progress * progress * (3 - 2 * progress);
-      const scale = 1.1 + (maxScale - 1.1) * ease;
-      shape.setAttribute('transform', `translate(${cx} ${cy}) scale(${scale}) translate(-50 -46)`);
-      if (progress < 1) raf = requestAnimationFrame(frame); else finalize();
-    };
-    frame(start);
-    // A backgrounded tab or interrupted animation must never trap the recipient.
-    finishTimer = later(finalize, duration + 300);
+    gate.classList.add('gate-closing');
+    finishTimer = later(finalize, 650);
   };
   const open = instant => {
     if (opening || disposed) return;
@@ -110,7 +92,7 @@ export function installOpening(root, { onReveal, musicEl }) {
   const visibility = () => { if (document.hidden) { vibrate(0); audioContext?.suspend().catch(() => {}); if (opening) finalize(); } };
   reduced.addEventListener('change', motionChange); document.addEventListener('visibilitychange', visibility);
   return () => {
-    disposed = true; timeouts.forEach(clearTimeout); cancelAnimationFrame(raf); if (idle !== undefined) cancelIdleCallback(idle);
+    disposed = true; timeouts.forEach(clearTimeout); if (idle !== undefined) cancelIdleCallback(idle);
     vibrate(0); audioContext?.close().catch(() => {});
     reduced.removeEventListener('change', motionChange); document.removeEventListener('visibilitychange', visibility);
   };
