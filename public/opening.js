@@ -50,21 +50,28 @@ export function installOpening(root, { onReveal, musicEl }) {
   if ('requestIdleCallback' in window) idle = requestIdleCallback(rest, { timeout: 2500 }); else later(rest, 1200);
   if (musicEl) { musicEl.preload = navigator.connection?.saveData ? 'metadata' : 'auto'; musicEl.load(); }
 
-  const finalize = () => {
+  const revealStage = () => {
     if (disposed || finished) return;
     finished = true; clearTimeout(finishTimer);
-    gate.hidden = true; stage.classList.remove('awaiting');
+    stage.classList.remove('awaiting');
     stage.inert = false; stage.removeAttribute('aria-hidden');
     const title = stage.querySelector('h1'); title.tabIndex = -1; title.focus({ preventScroll: true });
     onReveal();
   };
-  // A fade to black, then a fade in: simple, robust across browsers (unlike an
-  // animated SVG clip-path, which some engines fail to repaint mid-animation).
+  const finalize = () => { revealStage(); gate.hidden = true; };
+  // A soft final pulse, then a slow crossfade: the gate dissolves while the
+  // story is already easing in underneath, instead of a hard cut to black.
+  // Simple opacity/transform transitions are robust across browsers, unlike an
+  // animated SVG clip-path, which some engines fail to repaint mid-animation.
   const reveal = instant => {
     if (disposed) return;
     if (instant || reduced.matches) { finalize(); return; }
-    gate.classList.add('gate-closing');
-    finishTimer = later(finalize, 650);
+    heart.classList.add('heart-release');
+    later(() => {
+      gate.classList.add('gate-closing');
+      finishTimer = later(revealStage, 500);
+      later(() => { gate.hidden = true; }, 950);
+    }, 420);
   };
   const open = instant => {
     if (opening || disposed) return;
