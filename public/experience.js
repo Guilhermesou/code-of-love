@@ -36,6 +36,12 @@ export function mountExperience(d, root = document.getElementById('app')) {
     ...moments.filter(m => m.date).map(m => ({ date: m.date, title: m.title || 'Uma lembrança', text: m.text, photo: m.photo })),
     ...places.filter(p => p.date).map(p => ({ date: p.date, title: p.name, text: p.memory, photo: p.photo })),
   ].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+  const boothPhotos = [d.cover, ...moments.map(m => m.photo)].map(p => photo(p, 'Uma lembrança nossa', 'booth-photo')).filter(Boolean).slice(0, 4);
+  const detailLines = (d.details || '').split('\n').map(x => x.trim()).filter(Boolean);
+  const albumPages = [];
+  if (boothPhotos.length >= 2) albumPages.push({ label: 'Cabine de fotos', html: `<div class="album-card booth">${boothPhotos.join('')}<span class="booth-caption">${esc(d.recipient || 'nós')} <em>&</em> ${esc(d.sender || 'eu')}</span></div>` });
+  if (detailLines.length) albumPages.push({ label: 'Dicionário do amor', html: `<div class="album-card dictionary"><span class="word">amor</span><span class="pronunciation">substantivo · o que ${esc(d.sender || 'eu')} sente por ${esc(d.recipient || 'você')}</span><ol>${detailLines.map(x => `<li>${esc(x)}</li>`).join('')}</ol></div>` });
+  if (letters.length) albumPages.push({ label: 'Cartas lacradas', html: `<div class="album-card sealed-page"><p class="helper">Um carinho guardado para cada momento.</p><div class="sealed-letters">${letters.map((l, i) => `<details class="sealed"><summary><span class="seal" aria-hidden="true">♡</span><span><small>CARTA ${String(i + 1).padStart(2, '0')}</small>${esc(l.title)}</span><span class="letter-plus" aria-hidden="true">+</span></summary><p class="prose">${esc(l.text)}</p></details>`).join('')}</div></div>` });
   root.innerHTML = `<div class="experience" style="--accent:${/^#[a-f0-9]{6}$/i.test(d.accent) ? d.accent : '#c4685f'}">
     <div class="gift-gate"><span class="eyebrow">para ${esc(d.recipient || 'você')}</span><h1>${esc(opening)}</h1><button class="heart-button" aria-label="Toque 1 de 3 para abrir a surpresa"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 88C20 65 4 45 4 30A22 22 0 0 1 50 22A22 22 0 0 1 96 30C96 45 80 65 50 88Z" fill="currentColor"/></svg></button><p class="heart-hint" aria-live="polite">Toque no coração</p><div class="heart-progress" aria-hidden="true"><span></span><span></span><span></span></div><label class="sound-choice"><input id="with-sound" type="checkbox" checked> ${music ? 'Batidas e música' : 'Som das batidas'}</label><button class="text-button skip" hidden>Rever nossa história</button><span class="gate-signature">feito com amor, por ${esc(d.sender || 'quem te ama')}</span></div>
     <div class="story-stage awaiting" inert aria-hidden="true"><article class="gift-story">
@@ -45,12 +51,12 @@ export function mountExperience(d, root = document.getElementById('app')) {
       ${d.firstMemory ? section('aquele dia', `<h2>O começo de nós.</h2><p class="prose">${esc(d.firstMemory)}</p>`) : ''}
       ${Number.isFinite(days) && days >= 0 ? section('desde então', `<div class="days-number">${days.toLocaleString('pt-BR')}</div><h2>dias de história.</h2><div class="counter-breakdown" id="counter-breakdown"></div><p>${esc(labels[d.occasion])}</p><span class="date-caption">${esc(dateText(date))}</span>`, 'counter-section') : ''}
       ${timeline.length > 1 ? section('nossa linha do tempo', `<h2>Cada capítulo, no seu tempo.</h2><div class="timeline">${timeline.map(e => `<div class="timeline-item"><span class="timeline-dot" aria-hidden="true"></span><div class="timeline-content"><span class="date-caption">${esc(dateText(e.date))}</span><h3>${esc(e.title)}</h3>${e.text ? `<p class="prose">${esc(e.text)}</p>` : ''}${photo(e.photo, e.title, 'timeline-photo')}</div></div>`).join('')}</div>`) : ''}
+      ${albumPages.length ? section('nosso álbum', `<h2>Um livrinho só nosso.</h2><div class="album"><div class="album-track" id="album-track">${albumPages.map(p => `<div class="album-page">${p.html}<span class="album-caption">${esc(p.label)}</span></div>`).join('')}</div></div>${albumPages.length > 1 ? `<div class="album-controls"><button class="text-button" id="album-prev" aria-label="Página anterior">←</button><div class="album-dots">${albumPages.map((_, i) => `<button class="album-dot ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Ir para página ${i + 1}"></button>`).join('')}</div><button class="text-button" id="album-next" aria-label="Próxima página">→</button></div>` : ''}`, 'album-section') : ''}
       ${moments.length ? section('nossa história', `<h2>O caminho até aqui.</h2><div class="memory-list">${moments.map((m, i) => `<div class="memory"><span class="memory-number">${String(i + 1).padStart(2, '0')}</span><div><span class="date-caption">${esc(dateText(m.date))}</span><h3>${esc(m.title)}</h3><p class="prose">${esc(m.text)}</p>${photo(m.photo, m.title || 'Uma lembrança nossa')}</div></div>`).join('')}</div>`) : ''}
       ${places.length ? section('os nossos lugares', `<h2>Onde a vida nos encontrou.</h2><div class="place-tabs" role="group" aria-label="Escolha uma lembrança">${places.map((p, i) => `<button class="chip ${i === 0 ? 'selected' : ''}" data-place="${i}" aria-pressed="${i === 0}">${esc(p.name)}</button>`).join('')}</div><div id="place-view"></div>`) : ''}
       ${video ? section('um pedacinho de nós', `<h2>Para dar play na lembrança.</h2><video id="gift-video" controls playsinline preload="metadata" src="${esc(video)}"></video><p class="media-error" id="video-error" hidden>Não foi possível abrir este vídeo.</p>`) : ''}
       ${d.details ? section('o que eu continuo amando em você', `<div class="love-details">${d.details.split('\n').filter(x => x.trim()).map(x => `<p>${esc(x)}</p>`).join('')}</div>`) : ''}
       ${d.letter || voice ? section('de mim, para você', `${d.letter ? `<p class="prose declaration">${esc(d.letter)}</p><p class="signature">Com amor, ${esc(d.sender)}</p>` : ''}${voice ? `<div class="voice-note"><span>Na minha voz</span><audio id="gift-voice" controls preload="metadata" src="${esc(voice)}"></audio></div>` : ''}`) : ''}
-      ${letters.length ? section('para abrir quando precisar', `<h2>Cartas seladas.</h2><p>Um carinho guardado para cada momento.</p><div class="sealed-letters">${letters.map((l, i) => `<details class="sealed"><summary><span class="seal" aria-hidden="true">♡</span><span><small>CARTA ${String(i + 1).padStart(2, '0')}</small>${esc(l.title)}</span><span class="letter-plus" aria-hidden="true">+</span></summary><p class="prose">${esc(l.text)}</p></details>`).join('')}</div>`) : ''}
       <section class="gift-ending"><p class="prose">${esc(ending)}</p><div id="before-answer"><h2>${esc(d.question || 'Vamos continuar escrevendo a nossa história?')}</h2><button class="primary" id="answer">${esc(d.answer || 'Sempre, meu amor')}</button></div><div id="after-answer" hidden><span class="ending-heart" aria-hidden="true">♡</span><h2>${esc(d.after || 'Ainda temos tanta coisa linda para viver.')}</h2></div></section>
       <footer class="gift-footer">&lt; Código do amor /&gt;</footer>
     </article></div>${music ? `<audio id="gift-music" loop preload="auto" src="${esc(music)}"></audio><button class="music-toggle chip" hidden>Tocar música</button>` : ''}<p id="gift-status" class="gift-status" role="status"></p></div>`;
@@ -144,6 +150,26 @@ export function mountExperience(d, root = document.getElementById('app')) {
     root.querySelector('#before-answer').hidden = true; const after = root.querySelector('#after-answer'); after.hidden = false; after.tabIndex = -1; after.focus();
   };
   root.querySelectorAll('.sealed').forEach(el => el.addEventListener('toggle', () => { if (el.open) vibrate(10); }));
+  const albumTrack = root.querySelector('#album-track');
+  if (albumTrack) {
+    const pages = [...albumTrack.children];
+    const dots = [...root.querySelectorAll('.album-dot')];
+    const prevBtn = root.querySelector('#album-prev'), nextBtn = root.querySelector('#album-next');
+    let current = 0;
+    const setActive = i => { current = i; dots.forEach((btn, bi) => btn.classList.toggle('active', bi === i)); };
+    const goTo = i => { const idx = Math.max(0, Math.min(pages.length - 1, i)); setActive(idx); pages[idx].scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', inline: 'center', block: 'nearest' }); };
+    prevBtn?.addEventListener('click', () => { vibrate(8); goTo(current - 1); });
+    nextBtn?.addEventListener('click', () => { vibrate(8); goTo(current + 1); });
+    dots.forEach(btn => btn.addEventListener('click', () => { vibrate(8); goTo(Number(btn.dataset.index)); }));
+    let scrollTimer;
+    albumTrack.addEventListener('scroll', () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const i = Math.round(albumTrack.scrollLeft / albumTrack.clientWidth);
+        if (i !== current && i >= 0 && i < pages.length) setActive(i);
+      }, 120);
+    });
+  }
   const showPlace = i => {
     const p = places[i], lat = Number(p.lat), lng = Number(p.lng);
     const bbox = [Math.max(-180, lng - .015), Math.max(-90, lat - .01), Math.min(180, lng + .015), Math.min(90, lat + .01)].join(',');
