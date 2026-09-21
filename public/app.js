@@ -34,7 +34,8 @@ async function runCloudAction(action, successMessage, isPublish = false) {
   cloudBusy = true; render();
   try {
     const slug = await action();
-    if (isPublish) { draft.cloudSlug = slug; persist(); notify('Link gerado: ' + shareURL(slug)); }
+    draft.cloudSlug = slug; persist();
+    if (isPublish) notify('Link gerado: ' + shareURL(slug));
     else if (successMessage) notify(successMessage);
   } catch (err) { notify(err?.message === 'not-authenticated' ? 'Entre com seu e-mail para usar a nuvem.' : 'Não foi possível falar com a nuvem agora. Tente de novo.'); }
   finally { cloudBusy = false; render(); }
@@ -146,8 +147,8 @@ function render() {
     finally { cloudBusy = false; render(); }
   };
   const signOutBtn = document.getElementById('sign-out'); if (signOutBtn) signOutBtn.onclick = () => signOut().then(() => notify('Você saiu da conta.'));
-  const cloudSave = document.getElementById('cloud-save'); if (cloudSave) cloudSave.onclick = () => runCloudAction(() => publishSurprise(draft, { isPublic: false }), 'Rascunho salvo na nuvem.');
-  const cloudPublish = document.getElementById('cloud-publish'); if (cloudPublish) cloudPublish.onclick = () => runCloudAction(() => publishSurprise(draft, { isPublic: true }), null, true);
+  const cloudSave = document.getElementById('cloud-save'); if (cloudSave) cloudSave.onclick = () => runCloudAction(() => publishSurprise(draft), 'Rascunho salvo na nuvem.');
+  const cloudPublish = document.getElementById('cloud-publish'); if (cloudPublish) cloudPublish.onclick = () => runCloudAction(() => publishSurprise(draft, { makePublic: true }), null, true);
   const cloudRestore = document.getElementById('cloud-restore'); if (cloudRestore) cloudRestore.onclick = restoreFromCloud;
 }
 function dateFeedback() {

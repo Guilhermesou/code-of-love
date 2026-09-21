@@ -50,12 +50,19 @@ export async function uploadMediaFields(client, userId, draft) {
   return clone;
 }
 
-export async function publishSurprise(draft, { isPublic }) {
+export async function publishSurprise(draft, { makePublic = false } = {}) {
   const client = await getClient();
   const { data: { session } } = await client.auth.getSession();
   if (!session) throw new Error('not-authenticated');
   const uploaded = await uploadMediaFields(client, session.user.id, draft);
   const slug = draft.cloudSlug || slugify(draft.recipient);
+  // A plain "save" must never un-publish a link that is already out in the world
+  // (e.g. printed as a QR code), so it keeps whatever public/private state exists.
+  let isPublic = makePublic;
+  if (!isPublic) {
+    const { data: existing } = await client.from('surprises').select('public').eq('id', draft.id).maybeSingle();
+    isPublic = existing?.public ?? false;
+  }
   const { error } = await client.from('surprises').upsert({
     id: draft.id, owner: session.user.id, slug, draft: uploaded, public: isPublic, updated_at: new Date().toISOString(),
   });
