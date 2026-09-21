@@ -11,11 +11,12 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 let draft = newDraft(), step = 0, timer, saveChain = Promise.resolve(), cleanup;
 let storageError = false;
 let undoRemoval = null;
-let session = null, cloudBusy = false;
+let session = null, cloudBusy = false, previewing = false;
 try { const saved = await readDraft(); if (saved?.version === 1) draft = saved; } catch { storageError = true; }
 if (cloudEnabled) {
-  getSession().then(s => { session = s; render(); }).catch(() => {});
-  onAuthStateChange(s => { session = s; render(); });
+  const onSession = s => { session = s; if (!previewing) render(); };
+  getSession().then(onSession).catch(() => {});
+  onAuthStateChange(onSession);
 }
 function shareURL(slug) { return location.origin + location.pathname + '?s=' + slug; }
 function accountWidget() {
@@ -158,9 +159,10 @@ function dateFeedback() {
 function navigate(index) { step = Math.max(0, Math.min(5, index)); render(); window.scrollTo(0, 0); app.querySelector('main h1').tabIndex = -1; app.querySelector('main h1').focus(); }
 function showPreview() {
   const scroll = window.scrollY;
+  previewing = true;
   app.innerHTML = '<div class="preview-toolbar"><button class="outline" id="close-preview">← Voltar à edição</button><span>Prévia da surpresa</span></div><div id="experience-root"></div>';
   cleanup = mountExperience(draft, document.getElementById('experience-root')); window.scrollTo(0, 0);
-  document.getElementById('close-preview').onclick = () => { cleanup(); render(); window.scrollTo(0, scroll); };
+  document.getElementById('close-preview').onclick = () => { previewing = false; cleanup(); render(); window.scrollTo(0, scroll); };
 }
 function dataURL(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); }); }
 let webpSupport;
