@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body { margin:0; background:#0C0A0B; }
+  a { color:#C4685F; text-decoration:none; }
+  a:hover { color:#D98A80; }
+  @keyframes bat { 0%,100%{transform:scale(1)} 12%{transform:scale(1.1)} 24%{transform:scale(1.01)} 36%{transform:scale(1.06)} 52%{transform:scale(1)} }
+  @keyframes sobe { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes surge { from{opacity:0} to{opacity:1} }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+</style>
+</helmet>
+<div style="display:contents; {{ liveVars }}">
+<div style="position:relative; height:100vh; overflow:hidden; background:#0C0A0B; color:#F0E7E1; font-family:'Jost',system-ui,sans-serif; --ink:#F0E7E1; --mut:rgba(240,231,225,.58); --fraco:rgba(240,231,225,.4); --acc:#C4685F; --serif:'Cormorant Garamond',Georgia,serif; --script:'Parisienne',cursive">
+
+  <div style="position:absolute; inset:0; overflow-y:var(--cov,hidden); -webkit-mask-image:var(--mimg,url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgODhDMjAgNjUgNCA0NSA0IDMwQTIyIDIyIDAgMCAxIDUwIDIyQTIyIDIyIDAgMCAxIDk2IDMwQzk2IDQ1IDgwIDY1IDUwIDg4WiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==)); mask-image:var(--mimg,url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgODhDMjAgNjUgNCA0NSA0IDMwQTIyIDIyIDAgMCAxIDUwIDIyQTIyIDIyIDAgMCAxIDk2IDMwQzk2IDQ1IDgwIDY1IDUwIDg4WiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==)); -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; -webkit-mask-position:center 40%; mask-position:center 40%; -webkit-mask-size:var(--ms,0%) auto; mask-size:var(--ms,0%) auto; transition:-webkit-mask-size 2.3s cubic-bezier(.62,0,.24,1), mask-size 2.3s cubic-bezier(.62,0,.24,1)">
+
+    <article style="max-width:600px; margin:0 auto; padding:0 24px 120px">
+
+      <section style="min-height:92vh; display:flex; flex-direction:column; justify-content:center; gap:30px; padding:90px 0 70px">
+        <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco)">aquele dia</div>
+        <div style="position:relative; width:100%; aspect-ratio:4/5; border-radius:2px; overflow:hidden; box-shadow:0 40px 90px rgba(0,0,0,.65)">
+          <image-slot id="surp-hero" shape="rect" placeholder="foto da época do pedido"></image-slot>
+        </div>
+        <h1 style="font-family:var(--serif); font-weight:300; font-size:clamp(34px,9vw,52px); line-height:1.15; margin:0; letter-spacing:-.01em">Eu ensaiei a pergunta a semana inteira.</h1>
+        <div style="font-family:var(--serif); font-size:20px; line-height:1.85; color:rgba(240,231,225,.82); display:flex; flex-direction:column; gap:16px; text-wrap:pretty">
+          <p style="margin:0">[Escreva aqui como foi aquele dia: onde vocês estavam, que horas eram, o que você sentiu antes de perguntar.]</p>
+          <p style="margin:0">[E o que ela respondeu.]</p>
+        </div>
+      </section>
+
+      <section style="padding:96px 0; border-top:1px solid rgba(240,231,225,.1)">
+        <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco); margin-bottom:28px">desde então</div>
+        <p style="font-family:var(--serif); font-size:clamp(30px,8vw,44px); line-height:1.25; margin:0; font-weight:300">Há <span style="color:var(--acc)">{{ dias }}</span> dias, te pedi em namoro.</p>
+        <p style="font-size:14px; color:var(--mut); margin:22px 0 0; letter-spacing:.02em">{{ detalheTempo }}</p>
+      </section>
+
+      <section style="padding:96px 0 0; border-top:1px solid rgba(240,231,225,.1)">
+        <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco)">nossa história</div>
+        <h2 style="font-family:var(--serif); font-weight:300; font-size:clamp(30px,8vw,42px); margin:12px 0 0; line-height:1.2">O caminho do pedido até aqui</h2>
+      </section>
+
+      <section style="padding:56px 0">
+        <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc)">o primeiro encontro</div>
+        <p style="font-size:13px; color:var(--mut); margin:8px 0 18px">[data do primeiro encontro]</p>
+        <div style="width:100%; aspect-ratio:3/2; border-radius:2px; overflow:hidden"><image-slot id="surp-m1" shape="rect" placeholder="foto do primeiro encontro"></image-slot></div>
+        <p style="font-family:var(--serif); font-size:19px; line-height:1.8; color:rgba(240,231,225,.8); margin:20px 0 0; text-wrap:pretty">[Uma frase curta sobre esse dia.]</p>
+      </section>
+
+      <section style="padding:40px 0 56px">
+        <div style="border-left:2px solid var(--acc); padding-left:24px">
+          <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc)">o pedido de namoro</div>
+          <p style="font-size:13px; color:var(--mut); margin:8px 0 16px">[data do pedido]</p>
+          <p style="font-family:var(--serif); font-size:clamp(24px,6.5vw,32px); line-height:1.45; margin:0; font-weight:300; text-wrap:pretty">[A frase que resume esse dia para vocês dois.]</p>
+        </div>
+      </section>
+
+      <section style="padding:40px 0 56px">
+        <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc)">entre uma coisa e outra</div>
+        <p style="font-size:13px; color:var(--mut); margin:8px 0 18px">[período]</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+          <div style="aspect-ratio:3/4; border-radius:2px; overflow:hidden"><image-slot id="surp-m2a" shape="rect" placeholder="foto"></image-slot></div>
+          <div style="aspect-ratio:3/4; border-radius:2px; overflow:hidden; margin-top:28px"><image-slot id="surp-m2b" shape="rect" placeholder="foto"></image-slot></div>
+        </div>
+        <p style="font-family:var(--serif); font-size:19px; line-height:1.8; color:rgba(240,231,225,.8); margin:24px 0 0; text-wrap:pretty">[As viagens, as mudanças, o que aconteceu no meio do caminho.]</p>
+      </section>
+
+      <section style="padding:40px 0 56px">
+        <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc)">o casamento</div>
+        <p style="font-size:13px; color:var(--mut); margin:8px 0 18px">[data do casamento]</p>
+        <div style="width:100%; aspect-ratio:4/5; border-radius:2px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,.55)"><image-slot id="surp-m3" shape="rect" placeholder="foto do casamento"></image-slot></div>
+        <p style="font-family:var(--serif); font-size:19px; line-height:1.8; color:rgba(240,231,225,.8); margin:20px 0 0; text-wrap:pretty">[Uma lembrança desse dia.]</p>
+      </section>
+
+      <section style="padding:40px 0 96px">
+        <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc)">hoje</div>
+        <p style="font-family:var(--serif); font-size:19px; line-height:1.8; color:rgba(240,231,225,.8); margin:16px 0 0; text-wrap:pretty">[Como é a vida de vocês agora.]</p>
+      </section>
+
+      <sc-if value="{{ mostrarMapa }}" hint-placeholder-val="{{ true }}">
+        <section style="padding:96px 0; border-top:1px solid rgba(240,231,225,.1)">
+          <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco)">os nossos lugares</div>
+          <h2 style="font-family:var(--serif); font-weight:300; font-size:clamp(28px,7.5vw,38px); margin:12px 0 26px; line-height:1.25">Onde cada coisa aconteceu</h2>
+          <iframe src="./mapa.html" title="Mapa dos nossos lugares" style="width:100%; height:400px; border:1px solid rgba(240,231,225,.12); border-radius:2px; display:block; background:#0C0A0B"></iframe>
+          <p style="font-size:13px; color:var(--mut); margin:14px 0 0; line-height:1.6">Toque em cada ponto para ver a lembrança. Os lugares, as datas e as fotos são definidos por você.</p>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ mostrarVideo }}" hint-placeholder-val="{{ true }}">
+        <section style="padding:96px 0; border-top:1px solid rgba(240,231,225,.1)">
+          <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco); margin-bottom:26px">um vídeo</div>
+          <sc-if value="{{ temVideo }}" hint-placeholder-val="{{ false }}">
+            <video ref="{{ videoRef }}" src="{{ videoUrl }}" controls="{{ true }}" playsInline="{{ true }}" preload="metadata" onPlay="{{ aoTocarVideo }}" onPause="{{ aoPausarVideo }}" onEnded="{{ aoPausarVideo }}" style="width:100%; display:block; border-radius:2px; background:#110C0E; box-shadow:0 30px 70px rgba(0,0,0,.55)"></video>
+          </sc-if>
+          <sc-if value="{{ semVideo }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative; width:100%; aspect-ratio:16/9; border-radius:2px; overflow:hidden; background:#110C0E">
+              <image-slot id="surp-video" shape="rect" placeholder="quadro do vídeo"></image-slot>
+              <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none">
+                <span style="width:62px; height:62px; border-radius:50%; border:1px solid rgba(240,231,225,.55); background:rgba(12,10,11,.35); display:flex; align-items:center; justify-content:center; font-size:14px; padding-left:4px">▶</span>
+              </div>
+            </div>
+            <p style="font-size:13px; color:var(--mut); margin:14px 0 0">Adicione o arquivo do vídeo nos campos da surpresa para ele tocar aqui.</p>
+          </sc-if>
+        </section>
+      </sc-if>
+
+      <section style="padding:96px 0; border-top:1px solid rgba(240,231,225,.1)">
+        <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco)">o que eu continuo amando em você</div>
+        <ul style="list-style:none; padding:0; margin:34px 0 0; display:flex; flex-direction:column; gap:20px">
+          <li style="font-family:var(--serif); font-size:21px; line-height:1.6; color:rgba(240,231,225,.86); border-bottom:1px solid rgba(240,231,225,.09); padding-bottom:20px">[Um detalhe pequeno do dia a dia.]</li>
+          <li style="font-family:var(--serif); font-size:21px; line-height:1.6; color:rgba(240,231,225,.86); border-bottom:1px solid rgba(240,231,225,.09); padding-bottom:20px">[Outro, ainda mais bobo.]</li>
+          <li style="font-family:var(--serif); font-size:21px; line-height:1.6; color:rgba(240,231,225,.86); border-bottom:1px solid rgba(240,231,225,.09); padding-bottom:20px">[Algo que só você repara nela.]</li>
+        </ul>
+
+        <div style="font-family:var(--serif); font-size:20px; line-height:1.9; color:rgba(240,231,225,.82); margin-top:48px; display:flex; flex-direction:column; gap:18px; text-wrap:pretty">
+          <p style="margin:0">[A carta. Escreva do jeito que sai — sem ensaiar, como você faria num bilhete.]</p>
+        </div>
+        <p style="font-family:var(--script); font-size:34px; color:var(--acc); margin:28px 0 0">[assine aqui]</p>
+
+        <sc-if value="{{ temDeclaracao }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ tocarDeclaracao }}" style="display:flex; align-items:center; gap:14px; width:100%; min-height:56px; margin-top:34px; background:rgba(196,104,95,.08); border:1px solid rgba(196,104,95,.4); border-radius:3px; padding:16px 18px; color:#F0E7E1; font-family:'Jost',system-ui,sans-serif; font-size:14px; letter-spacing:.04em; cursor:pointer; text-align:left; transition:background .3s" style-hover="background:rgba(196,104,95,.14)">
+            <span style="width:34px; height:34px; border-radius:50%; border:1px solid rgba(196,104,95,.7); display:flex; align-items:center; justify-content:center; font-size:11px; flex:none">{{ iconeDeclaracao }}</span>
+            <span>{{ labelDeclaracao }}</span>
+          </button>
+        </sc-if>
+      </section>
+
+      <sc-if value="{{ mostrarCartas }}" hint-placeholder-val="{{ true }}">
+        <section style="padding:96px 0; border-top:1px solid rgba(240,231,225,.1)">
+          <div style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--fraco)">para abrir depois</div>
+          <h2 style="font-family:var(--serif); font-weight:300; font-size:clamp(28px,7.5vw,38px); margin:12px 0 8px; line-height:1.25">Cartas seladas</h2>
+          <p style="font-size:14px; color:var(--mut); margin:0 0 30px">Abra quando for a hora.</p>
+          <div style="display:flex; flex-direction:column; gap:14px">
+            <button type="button" onClick="{{ abrir1 }}" style="display:block; width:100%; min-height:56px; text-align:left; background:rgba(240,231,225,.03); border:1px solid rgba(240,231,225,.14); border-radius:2px; padding:22px; color:#F0E7E1; font-family:'Jost',system-ui,sans-serif; cursor:pointer; transition:border-color .4s, background .4s" style-hover="border-color:rgba(196,104,95,.5); background:rgba(196,104,95,.06)">
+              <div style="display:flex; align-items:center; gap:12px">
+                <span style="width:7px; height:7px; border-radius:50%; background:var(--acc); flex:none; opacity:var(--selo1,1); transition:opacity .5s"></span>
+                <span style="font-family:var(--serif); font-size:22px; line-height:1.35">[O título da primeira carta]</span>
+              </div>
+              <sc-if value="{{ aberta1 }}" hint-placeholder-val="{{ false }}">
+                <p style="font-family:var(--serif); font-size:18px; line-height:1.85; color:rgba(240,231,225,.78); margin:18px 0 0; padding-left:19px; animation:sobe .7s cubic-bezier(.2,.8,.2,1); text-wrap:pretty">[O que ela vai ler quando abrir esta.]</p>
+              </sc-if>
+            </button>
+            <button type="button" onClick="{{ abrir2 }}" style="display:block; width:100%; min-height:56px; text-align:left; background:rgba(240,231,225,.03); border:1px solid rgba(240,231,225,.14); border-radius:2px; padding:22px; color:#F0E7E1; font-family:'Jost',system-ui,sans-serif; cursor:pointer; transition:border-color .4s, background .4s" style-hover="border-color:rgba(196,104,95,.5); background:rgba(196,104,95,.06)">
+              <div style="display:flex; align-items:center; gap:12px">
+                <span style="width:7px; height:7px; border-radius:50%; background:var(--acc); flex:none; opacity:var(--selo2,1); transition:opacity .5s"></span>
+                <span style="font-family:var(--serif); font-size:22px; line-height:1.35">[O título da segunda carta]</span>
+              </div>
+              <sc-if value="{{ aberta2 }}" hint-placeholder-val="{{ false }}">
+                <p style="font-family:var(--serif); font-size:18px; line-height:1.85; color:rgba(240,231,225,.78); margin:18px 0 0; padding-left:19px; animation:sobe .7s cubic-bezier(.2,.8,.2,1); text-wrap:pretty">[O texto desta carta.]</p>
+              </sc-if>
+            </button>
+            <button type="button" onClick="{{ abrir3 }}" style="display:block; width:100%; min-height:56px; text-align:left; background:rgba(240,231,225,.03); border:1px solid rgba(240,231,225,.14); border-radius:2px; padding:22px; color:#F0E7E1; font-family:'Jost',system-ui,sans-serif; cursor:pointer; transition:border-color .4s, background .4s" style-hover="border-color:rgba(196,104,95,.5); background:rgba(196,104,95,.06)">
+              <div style="display:flex; align-items:center; gap:12px">
+                <span style="width:7px; height:7px; border-radius:50%; background:var(--acc); flex:none; opacity:var(--selo3,1); transition:opacity .5s"></span>
+                <span style="font-family:var(--serif); font-size:22px; line-height:1.35">[O título da terceira carta]</span>
+              </div>
+              <sc-if value="{{ aberta3 }}" hint-placeholder-val="{{ false }}">
+                <p style="font-family:var(--serif); font-size:18px; line-height:1.85; color:rgba(240,231,225,.78); margin:18px 0 0; padding-left:19px; animation:sobe .7s cubic-bezier(.2,.8,.2,1); text-wrap:pretty">[O texto desta carta.]</p>
+              </sc-if>
+            </button>
+          </div>
+        </section>
+      </sc-if>
+
+      <section style="padding:110px 0 60px; border-top:1px solid rgba(240,231,225,.1)">
+        <p style="font-family:var(--serif); font-size:clamp(26px,7vw,38px); line-height:1.4; margin:0; font-weight:300; text-wrap:pretty">Naquele dia, te pedi em namoro.</p>
+        <p style="font-family:var(--serif); font-size:clamp(26px,7vw,38px); line-height:1.4; margin:20px 0 0; font-weight:300; text-wrap:pretty">Depois, te pedi para dividir a vida comigo.</p>
+        <p style="font-family:var(--serif); font-size:clamp(26px,7vw,38px); line-height:1.4; margin:20px 0 0; font-weight:300; color:var(--acc); text-wrap:pretty">E todos os dias, continuo escolhendo você.</p>
+
+        <div style="margin-top:80px; padding-top:56px; border-top:1px solid rgba(240,231,225,.1)">
+          <sc-if value="{{ semResposta }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <p style="font-family:var(--serif); font-size:clamp(26px,7vw,36px); line-height:1.35; margin:0 0 36px; font-weight:300">{{ pergunta }}</p>
+              <button type="button" onClick="{{ responder }}" style="min-height:56px; background:var(--acc); border:none; border-radius:40px; padding:17px 52px; color:#fff; font-family:'Jost',system-ui,sans-serif; font-size:16px; letter-spacing:.06em; cursor:pointer; box-shadow:0 14px 44px rgba(196,104,95,.3); transition:transform .3s" style-hover="transform:scale(1.04)">{{ rotuloResposta }}</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ respondeu }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:surge 1.6s cubic-bezier(.2,.7,.2,1)">
+              <p style="font-family:var(--script); font-size:clamp(42px,12vw,62px); color:var(--acc); margin:0; line-height:1.25">{{ rotuloResposta }}</p>
+              <p style="font-family:var(--serif); font-size:clamp(21px,5.5vw,26px); line-height:1.7; color:rgba(240,231,225,.86); margin:26px 0 0; max-width:24ch; font-weight:300; animation:sobe 1.4s cubic-bezier(.2,.7,.2,1) .5s backwards; text-wrap:pretty">{{ textoDepois }}</p>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="margin-top:96px; display:flex; align-items:center; gap:2px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; letter-spacing:.14em; color:rgba(240,231,225,.24)">
+          <span style="color:rgba(196,104,95,.5)">&lt;</span><span>Código do amor</span><span style="color:rgba(196,104,95,.5)">/&gt;</span>
+        </div>
+      </section>
+
+    </article>
+  </div>
+
+  <button type="button" onClick="{{ toggleMusica }}" style="position:absolute; right:16px; bottom:16px; z-index:6; display:flex; align-items:center; gap:10px; min-height:44px; background:rgba(12,10,11,.72); border:1px solid rgba(240,231,225,.16); border-radius:40px; padding:11px 18px; color:rgba(240,231,225,.8); font-family:'Jost',system-ui,sans-serif; font-size:11px; letter-spacing:.18em; text-transform:uppercase; cursor:pointer; opacity:var(--uio,0); pointer-events:var(--uipe,none); backdrop-filter:blur(6px); transition:opacity 1s ease 1.8s, border-color .3s" style-hover="border-color:rgba(196,104,95,.6)">
+    <span style="width:6px; height:6px; border-radius:50%; background:var(--acc); opacity:var(--somOp,.3); transition:opacity .4s; display:block"></span>
+    {{ musicaLabel }}
+  </button>
+
+  <div style="position:absolute; inset:0; z-index:8; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:36px; padding:40px 28px 150px; box-sizing:border-box; background:radial-gradient(130% 95% at 50% 42%, #1B1214 0%, #110C0E 50%, #0C0A0B 100%); opacity:var(--go,1); pointer-events:var(--gpe,auto); transition:opacity 1.4s ease .4s">
+    <p style="font-family:var(--serif); font-size:clamp(22px,6vw,28px); font-weight:300; line-height:1.5; color:rgba(240,231,225,.9); text-align:center; margin:0; max-width:18ch; text-wrap:pretty">Hoje, há alguns anos, eu te fiz uma pergunta…</p>
+
+    <div role="button" tabindex="0" onClick="{{ aoTocar }}" style="position:relative; width:240px; height:240px; display:flex; align-items:center; justify-content:center; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent">
+      <svg viewBox="0 0 100 100" style="position:absolute; width:150px; height:150px; overflow:visible; animation:bat var(--beat,2s) ease-in-out infinite; filter:drop-shadow(0 0 40px rgba(196,104,95,.5))">
+        <path d="M50 88C20 65 4 45 4 30A22 22 0 0 1 50 22A22 22 0 0 1 96 30C96 45 80 65 50 88Z" fill="var(--acc)"></path>
+      </svg>
+    </div>
+
+    <p style="font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:rgba(240,231,225,.5); min-height:18px; text-align:center; margin:0">{{ dica }}</p>
+
+    <div style="position:absolute; left:0; right:0; bottom:26px; display:flex; flex-direction:column; align-items:center; gap:14px">
+      <button type="button" onClick="{{ toggleSom }}" style="min-height:44px; background:transparent; border:1px solid rgba(240,231,225,.18); border-radius:40px; padding:12px 22px; color:rgba(240,231,225,.7); font-family:'Jost',system-ui,sans-serif; font-size:11px; letter-spacing:.18em; text-transform:uppercase; cursor:pointer; transition:border-color .3s, color .3s" style-hover="border-color:rgba(196,104,95,.6); color:#F0E7E1">{{ rotuloSom }}</button>
+      <sc-if value="{{ jaVisitou }}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{ irDireto }}" style="min-height:44px; background:transparent; border:none; color:rgba(240,231,225,.45); font-family:'Jost',system-ui,sans-serif; font-size:11px; letter-spacing:.16em; text-transform:uppercase; cursor:pointer; padding:10px 14px; text-decoration:underline; text-underline-offset:5px">ir direto ao conteúdo</button>
+      </sc-if>
+    </div>
+  </div>
+
+  <sc-if value="{{ temMusica }}" hint-placeholder-val="{{ false }}">
+    <audio ref="{{ musicaRef }}" src="{{ musicaUrl }}" loop="{{ true }}" style="display:none"></audio>
+  </sc-if>
+  <sc-if value="{{ temDeclaracao }}" hint-placeholder-val="{{ false }}">
+    <audio ref="{{ declaracaoRef }}" src="{{ audioDeclaracaoUrl }}" onEnded="{{ fimDeclaracao }}" style="display:none"></audio>
+  </sc-if>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:932},&quot;dataPedido&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Datas&quot;},&quot;pergunta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Vamos continuar escrevendo a nossa história?&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Encerramento&quot;},&quot;resposta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sempre, meu amor&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Encerramento&quot;},&quot;textoDepois&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ainda temos tanta coisa linda para viver.&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Encerramento&quot;},&quot;musicaUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Áudio e vídeo&quot;},&quot;audioDeclaracaoUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Áudio e vídeo&quot;},&quot;videoUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Áudio e vídeo&quot;},&quot;mostrarMapa&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Seções opcionais&quot;},&quot;mostrarVideo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Seções opcionais&quot;},&quot;mostrarCartas&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Seções opcionais&quot;},&quot;corDestaque&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#C4685F&quot;,&quot;#B0524F&quot;,&quot;#C98A6B&quot;,&quot;#A85C6B&quot;],&quot;default&quot;:&quot;#C4685F&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  state = { taps: 0, revelado: false, semMascara: false, agora: Date.now(),
+            som: true, tocandoMusica: false, tocandoDeclaracao: false,
+            respondeu: false, jaVisitou: false, abertas: {} };
+
+  componentDidMount() {
+    this.musicaRef = React.createRef();
+    this.declaracaoRef = React.createRef();
+    this.videoRef = React.createRef();
+    let visitou = false;
+    try { visitou = localStorage.getItem('cda-visitou') === '1'; } catch (e) {}
+    this.tick = setInterval(() => this.setState({ agora: Date.now() }), 60000);
+    this.setState({ jaVisitou: visitou });
+  }
+  componentWillUnmount() {
+    clearInterval(this.tick); clearInterval(this.loop); clearTimeout(this.tMask);
+  }
+
+  get tempos() { return [2, 1.25, 0.8, 0.48]; }
+  get reduzido() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  ac() {
+    if (!this.state.som) return null;
+    if (!this._ac) { const C = window.AudioContext || window.webkitAudioContext; if (C) this._ac = new C(); }
+    if (this._ac && this._ac.state === 'suspended') this._ac.resume();
+    return this._ac;
+  }
+  thump(g) {
+    const c = this.ac(); if (!c) return;
+    const t = c.currentTime, f = g || 1;
+    const bater = (at, gain) => {
+      const o = c.createOscillator(), v = c.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(110, at);
+      o.frequency.exponentialRampToValueAtTime(38, at + 0.19);
+      v.gain.setValueAtTime(0.0001, at);
+      v.gain.exponentialRampToValueAtTime(gain, at + 0.014);
+      v.gain.exponentialRampToValueAtTime(0.0001, at + 0.3);
+      o.connect(v); v.connect(c.destination); o.start(at); o.stop(at + 0.36);
+    };
+    bater(t, 0.42 * f); bater(t + 0.21, 0.24 * f);
+  }
+  abrirCarta(n) {
+    this.setState(p => {
+      const a = Object.assign({}, p.abertas);
+      a[n] = !a[n];
+      return { abertas: a };
+    });
+  }
+  loopBatida(ms) { clearInterval(this.loop); this.loop = setInterval(() => this.thump(), ms); }
+
+  revelar(comSom) {
+    clearInterval(this.loop);
+    try { localStorage.setItem('cda-visitou', '1'); } catch (e) {}
+    this.setState({ revelado: true });
+    this.tMask = setTimeout(() => this.setState({ semMascara: true }), this.reduzido ? 60 : 2600);
+    if (comSom !== false && this.state.som) this.iniciarMusica();
+  }
+  iniciarMusica() {
+    const a = this.musicaRef && this.musicaRef.current;
+    if (!a || !this.props.musicaUrl) return;
+    a.volume = 0.5;
+    a.play().then(() => this.setState({ tocandoMusica: true })).catch(() => {});
+  }
+
+  renderVals() {
+    const s = this.state;
+    const dataPedido = this.props.dataPedido || '';
+    let dias = null, detalhe = 'Defina a data do pedido de namoro para o contador começar.';
+    if (dataPedido) {
+      const ms = s.agora - new Date(dataPedido + 'T00:00:00').getTime();
+      if (ms > 0) {
+        dias = Math.floor(ms / 86400000);
+        const anos = Math.floor(dias / 365.25);
+        detalhe = anos >= 1
+          ? (anos === 1 ? 'Um ano e mais um pouco. E continua contando.' : anos + ' anos e mais um pouco. E continua contando.')
+          : 'E continua contando.';
+      }
+    }
+
+    const v = ['--beat:' + (this.tempos[s.taps] || 2) + 's'];
+    if (this.props.corDestaque) v.push('--acc:' + this.props.corDestaque);
+    v.push('--somOp:' + (s.tocandoMusica ? 1 : 0.28));
+    [1, 2, 3].forEach(n => v.push('--selo' + n + ':' + (s.abertas[n] ? 0.25 : 1)));
+    if (s.revelado) v.push('--ms:3600%', '--go:0', '--gpe:none', '--cov:auto', '--uio:1', '--uipe:auto');
+    if (s.semMascara) v.push('--mimg:none');
+
+    return {
+      liveVars: v.join(';'),
+      dica: ['toque no coração', 'de novo', 'mais uma vez', 'respira'][s.taps],
+      dias: dias === null ? '—' : dias.toLocaleString('pt-BR'),
+      detalheTempo: detalhe,
+      pergunta: this.props.pergunta || 'Vamos continuar escrevendo a nossa história?',
+      rotuloResposta: this.props.resposta || 'Sempre, meu amor',
+      textoDepois: this.props.textoDepois || 'Ainda temos tanta coisa linda para viver.',
+      respondeu: s.respondeu, semResposta: !s.respondeu,
+      jaVisitou: s.jaVisitou && !s.revelado,
+      temMusica: !!this.props.musicaUrl,
+      musicaUrl: this.props.musicaUrl || '',
+      musicaRef: this.musicaRef,
+      temDeclaracao: !!this.props.audioDeclaracaoUrl,
+      audioDeclaracaoUrl: this.props.audioDeclaracaoUrl || '',
+      declaracaoRef: this.declaracaoRef,
+      iconeDeclaracao: s.tocandoDeclaracao ? '❚❚' : '▶',
+      labelDeclaracao: s.tocandoDeclaracao ? 'tocando a declaração' : 'ouvir isso na minha voz',
+      rotuloSom: s.som ? 'abrir com música' : 'abrir em silêncio',
+      musicaLabel: !this.props.musicaUrl ? 'sem música' : (s.tocandoMusica ? 'pausar música' : 'tocar música'),
+      toggleSom: () => this.setState({ som: !s.som }),
+      irDireto: () => this.revelar(s.som),
+      aoTocar: () => {
+        if (s.revelado) return;
+        const n = Math.min(3, s.taps + 1);
+        this.setState({ taps: n });
+        this.thump(1 + n * 0.16);
+        if (!this.reduzido) this.loopBatida(this.tempos[n] * 1000);
+        if (n === 3) setTimeout(() => this.revelar(s.som), 900);
+      },
+      responder: () => this.setState({ respondeu: true }),
+      mostrarMapa: this.props.mostrarMapa !== false,
+      mostrarVideo: this.props.mostrarVideo !== false,
+      mostrarCartas: this.props.mostrarCartas !== false,
+      temVideo: !!this.props.videoUrl,
+      semVideo: !this.props.videoUrl,
+      videoUrl: this.props.videoUrl || '',
+      videoRef: this.videoRef,
+      aberta1: !!s.abertas[1], aberta2: !!s.abertas[2], aberta3: !!s.abertas[3],
+      abrir1: () => this.abrirCarta(1),
+      abrir2: () => this.abrirCarta(2),
+      abrir3: () => this.abrirCarta(3),
+      aoTocarVideo: () => {
+        const m = this.musicaRef && this.musicaRef.current;
+        const d = this.declaracaoRef && this.declaracaoRef.current;
+        if (d) d.pause();
+        if (m && s.tocandoMusica) { m.pause(); this._retomar = true; }
+        this.setState({ tocandoDeclaracao: false });
+      },
+      aoPausarVideo: () => {
+        const m = this.musicaRef && this.musicaRef.current;
+        if (m && this._retomar) { m.play().catch(() => {}); this._retomar = false; }
+      },
+      toggleMusica: () => {
+        const a = this.musicaRef && this.musicaRef.current;
+        if (!a) return;
+        if (s.tocandoMusica) { a.pause(); this.setState({ tocandoMusica: false }); }
+        else { a.play().then(() => this.setState({ tocandoMusica: true })).catch(() => {}); }
+      },
+      tocarDeclaracao: () => {
+        const d = this.declaracaoRef && this.declaracaoRef.current;
+        const m = this.musicaRef && this.musicaRef.current;
+        if (!d) return;
+        if (s.tocandoDeclaracao) {
+          d.pause();
+          this.setState({ tocandoDeclaracao: false });
+          if (m && this.props.musicaUrl && s.tocandoMusica) m.play().catch(() => {});
+        } else {
+          if (m) m.pause();
+          d.play().then(() => this.setState({ tocandoDeclaracao: true })).catch(() => {});
+        }
+      },
+      fimDeclaracao: () => {
+        const m = this.musicaRef && this.musicaRef.current;
+        this.setState({ tocandoDeclaracao: false });
+        if (m && s.tocandoMusica) m.play().catch(() => {});
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

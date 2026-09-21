@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body { margin:0; background:#08070A; }
+  a { color:#C25A69; text-decoration:none; }
+  a:hover { color:#E08595; }
+  input, textarea { font-family:'Jost',system-ui,sans-serif; }
+  input::placeholder, textarea::placeholder { color:rgba(243,236,230,.3); }
+  @keyframes sobe { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</helmet>
+<div style="min-height:100vh; background:#08070A; color:#F3ECE6; font-family:'Jost',system-ui,sans-serif; --ink:#F3ECE6; --mut:rgba(243,236,230,.55); --acc:#C25A69; --serif:'Cormorant Garamond',Georgia,serif; --script:'Parisienne',cursive">
+
+  <header style="display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 26px; border-bottom:1px solid rgba(243,236,230,.1); flex-wrap:wrap">
+    <div style="display:flex; align-items:baseline; gap:10px">
+      <span style="display:flex; align-items:baseline; gap:3px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:16px; letter-spacing:.06em; color:#F3ECE6"><span style="color:var(--acc)">&lt;</span>Código do amor<span style="color:var(--acc)">/&gt;</span></span>
+      <span style="font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:rgba(243,236,230,.35)">criar surpresa</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px">
+      <span style="font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--mut)">{{ passoLabel }}</span>
+      <div style="width:120px; height:2px; background:rgba(243,236,230,.14); border-radius:2px; overflow:hidden">
+        <div style="height:100%; background:var(--acc); width:var(--prog,16%); transition:width .5s cubic-bezier(.4,0,.2,1)"></div>
+      </div>
+    </div>
+  </header>
+
+  <div style="display:contents; {{ liveVars }}">
+  <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,420px); gap:0; align-items:stretch; min-height:calc(100vh - 69px)">
+
+    <main style="padding:56px 44px 80px; max-width:680px">
+      <nav style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:44px">
+        <button type="button" onClick="{{ ir1 }}" style="background:transparent; border:1px solid rgba(243,236,230,.16); border-radius:30px; padding:7px 15px; color:#F3ECE6; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; opacity:var(--o1,.35); transition:opacity .3s, border-color .3s" style-hover="border-color:rgba(194,90,105,.6)">1 quem</button>
+        <button type="button" onClick="{{ ir2 }}" style="background:transparent; border:1px solid rgba(243,236,230,.16); border-radius:30px; padding:7px 15px; color:#F3ECE6; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; opacity:var(--o2,.35); transition:opacity .3s, border-color .3s" style-hover="border-color:rgba(194,90,105,.6)">2 a data</button>
+        <button type="button" onClick="{{ ir3 }}" style="background:transparent; border:1px solid rgba(243,236,230,.16); border-radius:30px; padding:7px 15px; color:#F3ECE6; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; opacity:var(--o3,.35); transition:opacity .3s, border-color .3s" style-hover="border-color:rgba(194,90,105,.6)">3 fotos</button>
+        <button type="button" onClick="{{ ir4 }}" style="background:transparent; border:1px solid rgba(243,236,230,.16); border-radius:30px; padding:7px 15px; color:#F3ECE6; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; opacity:var(--o4,.35); transition:opacity .3s, border-color .3s" style-hover="border-color:rgba(194,90,105,.6)">4 história</button>
+        <button type="button" onClick="{{ ir5 }}" style="background:transparent; border:1px solid rgba(243,236,230,.16); border-radius:30px; padding:7px 15px; color:#F3ECE6; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; opacity:var(--o5,.35); transition:opacity .3s, border-color .3s" style-hover="border-color:rgba(194,90,105,.6)">5 a carta</button>
+        <button type="button" onClick="{{ ir6 }}" style="background:transparent; border:1px solid rgba(243,236,230,.16); border-radius:30px; padding:7px 15px; color:#F3ECE6; font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; opacity:var(--o6,.35); transition:opacity .3s, border-color .3s" style-hover="border-color:rgba(194,90,105,.6)">6 entregar</button>
+      </nav>
+
+      <sc-if value="{{ p1 }}" hint-placeholder-val="{{ true }}">
+        <section style="animation:sobe .5s ease">
+          <h1 style="font-family:var(--serif); font-weight:300; font-size:42px; margin:0 0 10px; line-height:1.15">Para quem é a surpresa?</h1>
+          <p style="color:var(--mut); font-size:15px; margin:0 0 36px; max-width:46ch">Os dois nomes aparecem na primeira tela, escritos à mão.</p>
+          <div style="display:flex; flex-direction:column; gap:22px; max-width:440px">
+            <label style="display:flex; flex-direction:column; gap:8px">
+              <span style="font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--mut)">o nome dela / dele</span>
+              <input value="{{ nomeA }}" onInput="{{ setNomeA }}" placeholder="Ana" style="background:transparent; border:none; border-bottom:1px solid rgba(243,236,230,.2); padding:10px 0; color:#F3ECE6; font-size:22px; outline:none" style-focus="border-bottom-color:#C25A69">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:8px">
+              <span style="font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--mut)">o seu nome</span>
+              <input value="{{ nomeB }}" onInput="{{ setNomeB }}" placeholder="Léo" style="background:transparent; border:none; border-bottom:1px solid rgba(243,236,230,.2); padding:10px 0; color:#F3ECE6; font-size:22px; outline:none" style-focus="border-bottom-color:#C25A69">
+            </label>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ p2 }}" hint-placeholder-val="{{ false }}">
+        <section style="animation:sobe .5s ease">
+          <h1 style="font-family:var(--serif); font-weight:300; font-size:42px; margin:0 0 10px; line-height:1.15">Quando começou?</h1>
+          <p style="color:var(--mut); font-size:15px; margin:0 0 36px; max-width:46ch">A partir dessa data o contador corre sozinho, para sempre.</p>
+          <input type="date" value="{{ data }}" onInput="{{ setData }}" style="background:transparent; border:1px solid rgba(243,236,230,.2); border-radius:4px; padding:14px 16px; color:#F3ECE6; font-size:17px; outline:none; color-scheme:dark" style-focus="border-color:#C25A69">
+          <div style="margin-top:34px; font-family:var(--serif); font-size:19px; color:rgba(243,236,230,.75)">{{ resumoDias }}</div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ p3 }}" hint-placeholder-val="{{ false }}">
+        <section style="animation:sobe .5s ease">
+          <h1 style="font-family:var(--serif); font-weight:300; font-size:42px; margin:0 0 10px; line-height:1.15">As fotos</h1>
+          <p style="color:var(--mut); font-size:15px; margin:0 0 30px; max-width:46ch">Uma foto de capa e mais algumas para a galeria. Arraste para dentro dos quadros.</p>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:520px">
+            <div style="grid-column:span 3; aspect-ratio:16/9; border-radius:4px; overflow:hidden"><image-slot id="cri-capa" shape="rect" placeholder="foto de capa"></image-slot></div>
+            <div style="aspect-ratio:1; border-radius:4px; overflow:hidden"><image-slot id="cri-g1" shape="rect" placeholder="foto"></image-slot></div>
+            <div style="aspect-ratio:1; border-radius:4px; overflow:hidden"><image-slot id="cri-g2" shape="rect" placeholder="foto"></image-slot></div>
+            <div style="aspect-ratio:1; border-radius:4px; overflow:hidden"><image-slot id="cri-g3" shape="rect" placeholder="foto"></image-slot></div>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ p4 }}" hint-placeholder-val="{{ false }}">
+        <section style="animation:sobe .5s ease">
+          <h1 style="font-family:var(--serif); font-weight:300; font-size:42px; margin:0 0 10px; line-height:1.15">Os momentos</h1>
+          <p style="color:var(--mut); font-size:15px; margin:0 0 30px; max-width:46ch">Três a seis datas que contam a história de vocês. Uma frase curta em cada.</p>
+          <div style="display:flex; flex-direction:column; gap:14px; max-width:520px">
+            <div style="border:1px solid rgba(243,236,230,.14); border-radius:4px; padding:18px; display:flex; flex-direction:column; gap:10px">
+              <input value="{{ m1t }}" onInput="{{ setM1t }}" placeholder="O primeiro café" style="background:transparent; border:none; color:#F3ECE6; font-family:var(--serif); font-size:21px; outline:none">
+              <input value="{{ m1d }}" onInput="{{ setM1d }}" placeholder="março de 2021" style="background:transparent; border:none; color:rgba(243,236,230,.6); font-size:13px; outline:none">
+            </div>
+            <div style="border:1px solid rgba(243,236,230,.14); border-radius:4px; padding:18px; display:flex; flex-direction:column; gap:10px">
+              <input value="{{ m2t }}" onInput="{{ setM2t }}" placeholder="A primeira viagem" style="background:transparent; border:none; color:#F3ECE6; font-family:var(--serif); font-size:21px; outline:none">
+              <input value="{{ m2d }}" onInput="{{ setM2d }}" placeholder="dezembro de 2021" style="background:transparent; border:none; color:rgba(243,236,230,.6); font-size:13px; outline:none">
+            </div>
+            <button type="button" onClick="{{ nada }}" style="background:transparent; border:1px dashed rgba(243,236,230,.2); border-radius:4px; padding:16px; color:var(--mut); font-size:13px; cursor:pointer; transition:border-color .3s, color .3s" style-hover="border-color:rgba(194,90,105,.6); color:#F3ECE6">+ adicionar momento</button>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ p5 }}" hint-placeholder-val="{{ false }}">
+        <section style="animation:sobe .5s ease">
+          <h1 style="font-family:var(--serif); font-weight:300; font-size:42px; margin:0 0 10px; line-height:1.15">A carta e a pergunta</h1>
+          <p style="color:var(--mut); font-size:15px; margin:0 0 30px; max-width:46ch">A carta fecha a página. A pergunta é a última coisa que ela vê.</p>
+          <div style="display:flex; flex-direction:column; gap:26px; max-width:560px">
+            <textarea value="{{ carta }}" onInput="{{ setCarta }}" rows="7" placeholder="Escreva do jeito que sai." style="background:rgba(243,236,230,.03); border:1px solid rgba(243,236,230,.16); border-radius:4px; padding:18px; color:#F3ECE6; font-family:var(--serif); font-size:18px; line-height:1.7; outline:none; resize:vertical" style-focus="border-color:#C25A69"></textarea>
+            <label style="display:flex; flex-direction:column; gap:8px">
+              <span style="font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--mut)">a pergunta final</span>
+              <input value="{{ pergunta }}" onInput="{{ setPergunta }}" placeholder="Quer casar comigo?" style="background:transparent; border:none; border-bottom:1px solid rgba(243,236,230,.2); padding:10px 0; color:#F3ECE6; font-family:var(--script); font-size:30px; outline:none" style-focus="border-bottom-color:#C25A69">
+            </label>
+            <label style="display:flex; align-items:center; gap:12px; cursor:pointer; color:var(--mut); font-size:14px">
+              <input type="checkbox" checked="{{ naoFoge }}" onChange="{{ toggleFoge }}" style="accent-color:#C25A69; width:16px; height:16px">
+              o botão “não” foge do dedo
+            </label>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ p6 }}" hint-placeholder-val="{{ false }}">
+        <section style="animation:sobe .5s ease">
+          <h1 style="font-family:var(--serif); font-weight:300; font-size:42px; margin:0 0 10px; line-height:1.15">Como você quer entregar</h1>
+          <p style="color:var(--mut); font-size:15px; margin:0 0 30px; max-width:46ch">Pagamento único. A página fica no ar para sempre, com o link e o QR no seu nome.</p>
+          <div style="display:flex; gap:22px; flex-wrap:wrap; align-items:flex-start">
+            <div style="flex:1 1 240px; border:1px solid rgba(194,90,105,.45); border-radius:6px; padding:26px; background:rgba(194,90,105,.06)">
+              <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc)">uma surpresa</div>
+              <div style="font-family:var(--serif); font-size:46px; margin:10px 0 4px">R$ 39</div>
+              <div style="color:var(--mut); font-size:13px; margin-bottom:20px">pagamento único, sem renovação</div>
+              <ul style="list-style:none; padding:0; margin:0 0 24px; display:flex; flex-direction:column; gap:9px; font-size:14px; color:rgba(243,236,230,.8)">
+                <li>Link privado, no ar para sempre</li>
+                <li>QR code em alta, para imprimir</li>
+                <li>Fotos, vídeo, mapa e cartas seladas</li>
+                <li>Você pode editar depois</li>
+              </ul>
+              <button type="button" onClick="{{ publicar }}" style="width:100%; background:var(--acc); border:none; border-radius:40px; padding:15px; color:#fff; font-size:15px; letter-spacing:.05em; cursor:pointer; box-shadow:0 10px 34px rgba(194,90,105,.3); transition:transform .25s" style-hover="transform:scale(1.02)">Publicar surpresa</button>
+            </div>
+            <div style="flex:0 0 200px; display:flex; flex-direction:column; gap:12px; align-items:center">
+              <div style="width:180px; height:180px; border:1px solid rgba(243,236,230,.16); border-radius:6px; background:repeating-linear-gradient(45deg, rgba(243,236,230,.05) 0 8px, transparent 8px 16px); display:flex; align-items:center; justify-content:center; text-align:center; padding:16px; box-sizing:border-box">
+                <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; line-height:1.5; color:rgba(243,236,230,.5)">QR code gerado ao publicar</span>
+              </div>
+              <p style="font-size:12px; color:var(--mut); text-align:center; margin:0; line-height:1.6">Imprima e cole no presente, no espelho ou dentro do livro.</p>
+            </div>
+          </div>
+          <sc-if value="{{ publicado }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:28px; border:1px solid rgba(243,236,230,.16); border-radius:6px; padding:20px; animation:sobe .5s ease">
+              <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc); margin-bottom:8px">pronto</div>
+              <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; color:#F3ECE6">codigodoamor.com/{{ slug }}</div>
+            </div>
+          </sc-if>
+        </section>
+      </sc-if>
+
+      <div style="display:flex; gap:12px; margin-top:52px">
+        <button type="button" onClick="{{ voltar }}" style="background:transparent; border:1px solid rgba(243,236,230,.2); border-radius:40px; padding:13px 28px; color:rgba(243,236,230,.7); font-size:14px; cursor:pointer; transition:border-color .3s" style-hover="border-color:rgba(243,236,230,.5)">Voltar</button>
+        <button type="button" onClick="{{ avancar }}" style="background:#F3ECE6; border:none; border-radius:40px; padding:13px 34px; color:#08070A; font-size:14px; letter-spacing:.03em; cursor:pointer; transition:transform .25s" style-hover="transform:scale(1.03)">Continuar</button>
+      </div>
+    </main>
+
+    <aside style="border-left:1px solid rgba(243,236,230,.1); background:#0B0A0C; padding:40px 30px; display:flex; flex-direction:column; gap:18px; align-items:center; position:sticky; top:0; align-self:start; max-height:100vh">
+      <div style="font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:rgba(243,236,230,.35); align-self:flex-start">prévia</div>
+      <div style="width:100%; max-width:280px; aspect-ratio:9/19.5; border:1px solid rgba(243,236,230,.16); border-radius:26px; overflow:hidden; background:radial-gradient(120% 90% at 50% 42%, #17111a 0%, #0B0A0C 60%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:24px; box-sizing:border-box; text-align:center">
+        <div style="font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:rgba(243,236,230,.4)">alguém preparou algo para você</div>
+        <svg viewBox="0 0 100 100" style="width:88px; height:88px; overflow:visible; filter:drop-shadow(0 0 22px rgba(194,90,105,.5))">
+          <path d="M50 88C20 65 4 45 4 30A22 22 0 0 1 50 22A22 22 0 0 1 96 30C96 45 80 65 50 88Z" fill="var(--acc)"></path>
+        </svg>
+        <div style="font-family:var(--script); font-size:26px; color:#F3ECE6">{{ nomes }}</div>
+        <div style="font-family:var(--serif); font-size:14px; color:rgba(243,236,230,.6)">toque no coração</div>
+      </div>
+      <a href="./Surpresa.dc.html" style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; border-bottom:1px solid rgba(194,90,105,.4); padding-bottom:3px">abrir a experiência completa</a>
+    </aside>
+
+  </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:860},&quot;corDestaque&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#C25A69&quot;,&quot;#C9A227&quot;,&quot;#8E7BB8&quot;,&quot;#D98BA0&quot;],&quot;default&quot;:&quot;#C25A69&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { passo: 1, nomeA: '', nomeB: '', data: '2021-02-14', carta: '', pergunta: '',
+            m1t: '', m1d: '', m2t: '', m2d: '', naoFoge: true, publicado: false };
+
+  set(k) { return (e) => this.setState({ [k]: e.target.value }); }
+
+  renderVals() {
+    const s = this.state;
+    const titulos = ['', 'quem', 'a data', 'fotos', 'história', 'a carta', 'entregar'];
+    const v = ['--prog:' + Math.round(s.passo / 6 * 100) + '%'];
+    for (let i = 1; i <= 6; i++) v.push('--o' + i + ':' + (i === s.passo ? 1 : 0.35));
+    if (this.props.corDestaque) v.push('--acc:' + this.props.corDestaque);
+
+    const ms = Date.now() - new Date((s.data || '2021-02-14') + 'T00:00:00').getTime();
+    const dias = Math.max(0, Math.floor(ms / 86400000));
+    const nomeA = s.nomeA || 'Ana', nomeB = s.nomeB || 'Léo';
+
+    const vals = {
+      liveVars: v.join(';'),
+      passoLabel: 'passo ' + s.passo + ' de 6 · ' + titulos[s.passo],
+      nomes: nomeA + ' & ' + nomeB,
+      resumoDias: dias.toLocaleString('pt-BR') + ' dias até hoje. E contando.',
+      slug: (nomeA + '-e-' + nomeB).toLowerCase().normalize('NFD').replace(/[^a-z-]/g, ''),
+      nomeA: s.nomeA, nomeB: s.nomeB, data: s.data, carta: s.carta, pergunta: s.pergunta,
+      m1t: s.m1t, m1d: s.m1d, m2t: s.m2t, m2d: s.m2d,
+      naoFoge: s.naoFoge, publicado: s.publicado,
+      setNomeA: this.set('nomeA'), setNomeB: this.set('nomeB'), setData: this.set('data'),
+      setCarta: this.set('carta'), setPergunta: this.set('pergunta'),
+      setM1t: this.set('m1t'), setM1d: this.set('m1d'),
+      setM2t: this.set('m2t'), setM2d: this.set('m2d'),
+      toggleFoge: () => this.setState({ naoFoge: !s.naoFoge }),
+      nada: () => {},
+      publicar: () => this.setState({ publicado: true }),
+      voltar: () => this.setState({ passo: Math.max(1, s.passo - 1) }),
+      avancar: () => this.setState({ passo: Math.min(6, s.passo + 1) })
+    };
+    for (let i = 1; i <= 6; i++) {
+      vals['p' + i] = s.passo === i;
+      vals['ir' + i] = ((n) => () => this.setState({ passo: n }))(i);
+    }
+    return vals;
+  }
+}
+
+</script>
+</body>
+</html>
