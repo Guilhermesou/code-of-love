@@ -37,15 +37,13 @@ create policy "owner deletes own surprises"
   using (auth.uid() = owner);
 
 -- Storage: bucket público para mídia (fotos, áudio, vídeo).
--- Leitura é pública (necessária para abrir um link compartilhado sem login);
--- escrita é restrita à própria pasta do usuário ("<user_id>/...").
+-- O bucket já é "public", então downloads pela URL pública funcionam sem
+-- nenhuma política de leitura — criar uma política de SELECT aqui só serviria
+-- para permitir listar todos os arquivos do bucket (de qualquer usuário), o
+-- que não é necessário e expõe mais do que deveria.
 insert into storage.buckets (id, name, public)
 values ('media', 'media', true)
 on conflict (id) do nothing;
-
-create policy "anyone reads media"
-  on storage.objects for select
-  using (bucket_id = 'media');
 
 create policy "owner uploads own media"
   on storage.objects for insert
