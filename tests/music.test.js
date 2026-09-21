@@ -8,9 +8,9 @@ test('Spotify links produce only official embed URLs and strip tracking paramete
   assert.equal(info.embed, 'https://open.spotify.com/embed/track/0123456789ABCDEFGHIJKL');
   assert.equal(parseMusic('https://spotify.link/short').type, 'invalid');
 });
-test('YouTube variants yield an external listening link, never a hidden embed', () => {
+test('YouTube variants yield a privacy-friendly embed and an external listening link', () => {
   for (const link of ['https://youtu.be/abcdefghijk?t=3', 'https://www.youtube.com/watch?v=abcdefghijk', 'https://music.youtube.com/watch?v=abcdefghijk', 'https://youtube.com/shorts/abcdefghijk']) {
-    assert.deepEqual(parseMusic(link), { type: 'youtube', url: 'https://www.youtube.com/watch?v=abcdefghijk' });
+    assert.deepEqual(parseMusic(link), { type: 'youtube', url: 'https://www.youtube.com/watch?v=abcdefghijk', embed: 'https://www.youtube-nocookie.com/embed/abcdefghijk?rel=0' });
   }
   assert.equal(parseMusic('https://youtube.com/watch?v=bad').type, 'invalid');
   assert.equal(parseMusic('javascript:alert(1)').type, 'invalid');

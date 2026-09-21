@@ -10,7 +10,7 @@ export function parseMusic(value) {
   }
   if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'youtu.be'].includes(u.hostname)) {
     const id = u.hostname === 'youtu.be' ? u.pathname.slice(1) : u.searchParams.get('v') || u.pathname.match(/^\/(?:shorts|embed)\/([^/]+)\/?$/)?.[1];
-    return /^[\w-]{11}$/.test(id || '') ? { type: 'youtube', url: `https://www.youtube.com/watch?v=${id}` } : { type: 'invalid' };
+    return /^[\w-]{11}$/.test(id || '') ? { type: 'youtube', url: `https://www.youtube.com/watch?v=${id}`, embed: `https://www.youtube-nocookie.com/embed/${id}?rel=0` } : { type: 'invalid' };
   }
   if (['spotify.link', 'www.spotify.com', 'spotify.com'].includes(u.hostname)) return { type: 'invalid' };
   return { type: 'file', url: u.href };

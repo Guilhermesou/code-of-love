@@ -12,27 +12,28 @@ export function installOpening(root, { onReveal, musicEl }) {
   const later = (fn, ms) => { const id = setTimeout(() => { timeouts.delete(id); if (!disposed) fn(); }, ms); timeouts.add(id); return id; };
   const vibrate = pattern => { try { navigator.vibrate?.(pattern); } catch {} };
   const unlockAudio = () => {
-    if (!sound.checked) return;
+    if (!sound.checked) return Promise.resolve(null);
     try {
       const Audio = window.AudioContext || window.webkitAudioContext;
       if (!audioContext && Audio) audioContext = new Audio();
-      if (audioContext?.state === 'suspended') audioContext.resume().catch(() => {});
-    } catch {}
+      if (!audioContext) return Promise.resolve(null);
+      if (audioContext.state === 'suspended') return audioContext.resume().then(() => audioContext).catch(() => audioContext);
+      return Promise.resolve(audioContext);
+    } catch { return Promise.resolve(null); }
   };
   const beat = index => {
-    unlockAudio();
     const pulse = [18, 28, 40][index - 1];
     if (!reduced.matches) vibrate([pulse, 115, Math.round(pulse * .65)]);
-    const c = audioContext;
-    if (sound.checked && c && c.state !== 'closed') {
+    unlockAudio().then(c => {
+      if (!sound.checked || !c || c.state !== 'running') return;
       for (const [delay, strength] of [[0, 1], [.14, .65]]) {
         const t = c.currentTime + delay, o = c.createOscillator(), gain = c.createGain();
-        o.frequency.setValueAtTime(95, t); o.frequency.exponentialRampToValueAtTime(38, t + .18);
-        gain.gain.setValueAtTime(.0001, t); gain.gain.exponentialRampToValueAtTime(.12 * strength * (1 + index * .15), t + .015); gain.gain.exponentialRampToValueAtTime(.0001, t + .24);
+        o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(65, t + .18);
+        gain.gain.setValueAtTime(.0001, t); gain.gain.exponentialRampToValueAtTime(.45 * strength * (1 + index * .15), t + .015); gain.gain.exponentialRampToValueAtTime(.0001, t + .24);
         o.connect(gain); gain.connect(c.destination); o.start(t); o.stop(t + .26);
         o.onended = () => { o.disconnect(); gain.disconnect(); };
       }
-    }
+    });
     heart.style.setProperty('--beat-duration', [1.9, 1.25, .8, .5][index] + 's');
     if (!reduced.matches) heart.animate?.([{ transform: 'scale(1)' }, { transform: `scale(${1.08 + index * .025})`, offset: .2 }, { transform: 'scale(1)', offset: .5 }, { transform: 'scale(1.06)', offset: .7 }, { transform: 'scale(1)' }], { duration: 380 });
   };

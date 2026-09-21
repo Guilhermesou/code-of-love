@@ -28,7 +28,8 @@ export function mountExperience(d, root = document.getElementById('app')) {
     <svg width="0" height="0" class="clip-defs" aria-hidden="true"><defs><clipPath id="${clipId}" clipPathUnits="userSpaceOnUse"><path class="reveal-shape" d="M50 88C20 65 4 45 4 30A22 22 0 0 1 50 22A22 22 0 0 1 96 30C96 45 80 65 50 88Z"/></clipPath></defs></svg><div class="gift-gate"><span class="eyebrow">para ${esc(d.recipient || 'você')}</span><h1>${esc(opening)}</h1><button class="heart-button" aria-label="Toque 1 de 3 para abrir a surpresa"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 88C20 65 4 45 4 30A22 22 0 0 1 50 22A22 22 0 0 1 96 30C96 45 80 65 50 88Z" fill="currentColor"/></svg></button><p class="heart-hint" aria-live="polite">Toque no coração</p><div class="heart-progress" aria-hidden="true"><span></span><span></span><span></span></div><label class="sound-choice"><input id="with-sound" type="checkbox" checked> ${music ? 'Batidas e música' : 'Som das batidas'}</label><button class="text-button skip" hidden>Rever nossa história</button><span class="gate-signature">feito com amor, por ${esc(d.sender || 'quem te ama')}</span></div>
     <div class="story-stage awaiting" inert aria-hidden="true"><article class="gift-story">
       <header class="gift-hero"><p class="eyebrow">a nossa história</p><h1>${esc(d.recipient || 'Você')} <em>&</em> ${esc(d.sender || 'eu')}</h1>${photo(d.cover, 'Uma lembrança de nós dois', 'cover-photo')}<p class="scroll-hint">Uma lembrança de cada vez <span>↓</span></p></header>
-      ${musicInfo.type === 'spotify' || musicInfo.type === 'youtube' ? section('a nossa música', `<h2>Tem um pouco de nós nessa canção.</h2>${musicInfo.type === 'spotify' ? `<button type="button" class="outline" id="load-spotify">Abrir player do Spotify</button><div id="spotify-slot"></div><p class="helper">A reprodução disponível é definida pelo Spotify.</p>` : '<p>Uma música para acompanhar esta lembrança.</p>'}<a class="map-link" href="${esc(musicInfo.url)}" target="_blank" rel="noopener noreferrer">Ouvir no ${musicInfo.type === 'spotify' ? 'Spotify' : 'YouTube'} ↗</a>`) : ''}
+      ${musicInfo.type === 'spotify' ? section('a nossa música', `<h2>Tem um pouco de nós nessa canção.</h2><button type="button" class="outline" id="load-spotify">Abrir player do Spotify</button><div id="spotify-slot"></div><p class="helper">A reprodução disponível é definida pelo Spotify.</p><a class="map-link" href="${esc(musicInfo.url)}" target="_blank" rel="noopener noreferrer">Ouvir no Spotify ↗</a>`) : ''}
+      ${musicInfo.type === 'youtube' ? section('a nossa música', `<h2>Tem um pouco de nós nessa canção.</h2><button type="button" class="outline" id="load-youtube">Tocar vídeo</button><div id="youtube-slot"></div><p class="helper">A reprodução disponível é definida pelo YouTube.</p><a class="map-link" href="${esc(musicInfo.url)}" target="_blank" rel="noopener noreferrer">Ouvir no YouTube ↗</a>`) : ''}
       ${d.firstMemory ? section('aquele dia', `<h2>O começo de nós.</h2><p class="prose">${esc(d.firstMemory)}</p>`) : ''}
       ${Number.isFinite(days) && days >= 0 ? section('desde então', `<div class="days-number">${days.toLocaleString('pt-BR')}</div><h2>dias de história.</h2><p>${esc(labels[d.occasion])}</p><span class="date-caption">${esc(dateText(date))}</span>`, 'counter-section') : ''}
       ${milestones.length > 1 ? section('as datas que nos trouxeram até aqui', `<div class="milestones">${milestones.map(([key, title]) => `<div><span class="date-caption">${esc(dateText(d.dates[key]))}</span><h3>${title}</h3></div>`).join('')}</div>`) : ''}
@@ -64,9 +65,17 @@ export function mountExperience(d, root = document.getElementById('app')) {
     root.querySelector('#spotify-slot').innerHTML = `<iframe class="spotify-player" title="A nossa música no Spotify" src="${esc(musicInfo.embed)}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="eager"></iframe>`;
     spotifyButton.hidden = true;
   };
+  const youtubeButton = root.querySelector('#load-youtube');
+  if (youtubeButton) youtubeButton.onclick = () => {
+    allMedia.forEach(media => media.pause());
+    root.querySelector('#youtube-slot').innerHTML = `<iframe class="youtube-player" title="A nossa música no YouTube" src="${esc(musicInfo.embed)}&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" loading="eager"></iframe>`;
+    youtubeButton.hidden = true;
+  };
   allMedia.forEach(media => media.addEventListener('play', () => {
-    const slot = root.querySelector('#spotify-slot');
-    if (slot?.firstChild) { slot.replaceChildren(); spotifyButton.hidden = false; }
+    const spotifySlot = root.querySelector('#spotify-slot');
+    if (spotifySlot?.firstChild) { spotifySlot.replaceChildren(); spotifyButton.hidden = false; }
+    const youtubeSlot = root.querySelector('#youtube-slot');
+    if (youtubeSlot?.firstChild) { youtubeSlot.replaceChildren(); youtubeButton.hidden = false; }
   }));
   if (musicEl) {
     const sync = () => { musicButton.textContent = musicEl.paused ? '♫ Tocar música' : 'Ⅱ Pausar música'; musicButton.setAttribute('aria-pressed', String(!musicEl.paused)); };
@@ -84,5 +93,5 @@ export function mountExperience(d, root = document.getElementById('app')) {
     root.querySelectorAll('[data-place]').forEach(b => { b.classList.toggle('selected', Number(b.dataset.place) === i); b.setAttribute('aria-pressed', String(Number(b.dataset.place) === i)); });
   };
   if (places.length) { showPlace(0); root.querySelectorAll('[data-place]').forEach(b => b.onclick = () => showPlace(Number(b.dataset.place))); }
-  return () => { if (disposed) return; disposed = true; stopOpening(); root.querySelector('#spotify-slot')?.replaceChildren(); allMedia.forEach(el => { el.pause(); el.removeAttribute('src'); el.load(); }); };
+  return () => { if (disposed) return; disposed = true; stopOpening(); root.querySelector('#spotify-slot')?.replaceChildren(); root.querySelector('#youtube-slot')?.replaceChildren(); allMedia.forEach(el => { el.pause(); el.removeAttribute('src'); el.load(); }); };
 }
