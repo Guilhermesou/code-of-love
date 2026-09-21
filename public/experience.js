@@ -29,9 +29,13 @@ export function mountExperience(d, root = document.getElementById('app')) {
   const musicInfo = parseMusic(d.music);
   const music = musicInfo.type === 'file' ? musicInfo.url : '', voice = url(d.voice, 'audio'), video = url(d.video, 'video');
   const moments = d.moments.filter(m => m.title || m.text || url(m.photo, 'image'));
-  const milestones = Object.entries({ encontro: 'Nosso primeiro encontro', namoro: 'O pedido de namoro', casamento: 'Nosso casamento' }).filter(([key]) => d.dates[key]);
   const letters = d.letters.filter(l => l.title && l.text);
   const places = d.places.filter(p => p.name && String(p.lat).trim() && String(p.lng).trim() && Number.isFinite(Number(p.lat)) && Number.isFinite(Number(p.lng)) && Math.abs(Number(p.lat)) <= 90 && Math.abs(Number(p.lng)) <= 180);
+  const timeline = [
+    ...Object.entries({ encontro: 'Primeiro encontro', namoro: 'Pedido de namoro', casamento: 'Casamento', especial: d.specialLabel || 'Uma data especial' }).filter(([key]) => d.dates[key]).map(([key, title]) => ({ date: d.dates[key], title, text: '', photo: '' })),
+    ...moments.filter(m => m.date).map(m => ({ date: m.date, title: m.title || 'Uma lembrança', text: m.text, photo: m.photo })),
+    ...places.filter(p => p.date).map(p => ({ date: p.date, title: p.name, text: p.memory, photo: p.photo })),
+  ].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
   root.innerHTML = `<div class="experience" style="--accent:${/^#[a-f0-9]{6}$/i.test(d.accent) ? d.accent : '#c4685f'}">
     <div class="gift-gate"><span class="eyebrow">para ${esc(d.recipient || 'você')}</span><h1>${esc(opening)}</h1><button class="heart-button" aria-label="Toque 1 de 3 para abrir a surpresa"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 88C20 65 4 45 4 30A22 22 0 0 1 50 22A22 22 0 0 1 96 30C96 45 80 65 50 88Z" fill="currentColor"/></svg></button><p class="heart-hint" aria-live="polite">Toque no coração</p><div class="heart-progress" aria-hidden="true"><span></span><span></span><span></span></div><label class="sound-choice"><input id="with-sound" type="checkbox" checked> ${music ? 'Batidas e música' : 'Som das batidas'}</label><button class="text-button skip" hidden>Rever nossa história</button><span class="gate-signature">feito com amor, por ${esc(d.sender || 'quem te ama')}</span></div>
     <div class="story-stage awaiting" inert aria-hidden="true"><article class="gift-story">
@@ -40,7 +44,7 @@ export function mountExperience(d, root = document.getElementById('app')) {
       ${musicInfo.type === 'youtube' ? section('a nossa música', `<h2>Tem um pouco de nós nessa canção.</h2><button type="button" class="outline" id="load-youtube">Tocar vídeo</button><div id="youtube-slot"></div><p class="helper">A reprodução disponível é definida pelo YouTube.</p><a class="map-link" href="${esc(musicInfo.url)}" target="_blank" rel="noopener noreferrer">Ouvir no YouTube ↗</a>`) : ''}
       ${d.firstMemory ? section('aquele dia', `<h2>O começo de nós.</h2><p class="prose">${esc(d.firstMemory)}</p>`) : ''}
       ${Number.isFinite(days) && days >= 0 ? section('desde então', `<div class="days-number">${days.toLocaleString('pt-BR')}</div><h2>dias de história.</h2><div class="counter-breakdown" id="counter-breakdown"></div><p>${esc(labels[d.occasion])}</p><span class="date-caption">${esc(dateText(date))}</span>`, 'counter-section') : ''}
-      ${milestones.length > 1 ? section('as datas que nos trouxeram até aqui', `<div class="milestones">${milestones.map(([key, title]) => `<div><span class="date-caption">${esc(dateText(d.dates[key]))}</span><h3>${title}</h3></div>`).join('')}</div>`) : ''}
+      ${timeline.length > 1 ? section('nossa linha do tempo', `<h2>Cada capítulo, no seu tempo.</h2><div class="timeline">${timeline.map(e => `<div class="timeline-item"><span class="timeline-dot" aria-hidden="true"></span><div class="timeline-content"><span class="date-caption">${esc(dateText(e.date))}</span><h3>${esc(e.title)}</h3>${e.text ? `<p class="prose">${esc(e.text)}</p>` : ''}${photo(e.photo, e.title, 'timeline-photo')}</div></div>`).join('')}</div>`) : ''}
       ${moments.length ? section('nossa história', `<h2>O caminho até aqui.</h2><div class="memory-list">${moments.map((m, i) => `<div class="memory"><span class="memory-number">${String(i + 1).padStart(2, '0')}</span><div><span class="date-caption">${esc(dateText(m.date))}</span><h3>${esc(m.title)}</h3><p class="prose">${esc(m.text)}</p>${photo(m.photo, m.title || 'Uma lembrança nossa')}</div></div>`).join('')}</div>`) : ''}
       ${places.length ? section('os nossos lugares', `<h2>Onde a vida nos encontrou.</h2><div class="place-tabs" role="group" aria-label="Escolha uma lembrança">${places.map((p, i) => `<button class="chip ${i === 0 ? 'selected' : ''}" data-place="${i}" aria-pressed="${i === 0}">${esc(p.name)}</button>`).join('')}</div><div id="place-view"></div>`) : ''}
       ${video ? section('um pedacinho de nós', `<h2>Para dar play na lembrança.</h2><video id="gift-video" controls playsinline preload="metadata" src="${esc(video)}"></video><p class="media-error" id="video-error" hidden>Não foi possível abrir este vídeo.</p>`) : ''}
@@ -53,6 +57,8 @@ export function mountExperience(d, root = document.getElementById('app')) {
   const gate = root.querySelector('.gift-gate'), story = root.querySelector('.gift-story');
   const musicEl = root.querySelector('#gift-music'), voiceEl = root.querySelector('#gift-voice'), videoEl = root.querySelector('#gift-video');
   const musicButton = root.querySelector('.music-toggle');
+  const vibrate = pattern => { try { navigator.vibrate?.(pattern); } catch {} };
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let disposed = false;
   const status = msg => { root.querySelector('#gift-status').textContent = msg; };
   const play = async el => { try { await el.play(); } catch { status('O áudio não pôde iniciar. Confira o arquivo e toque para tentar novamente.'); } };
@@ -69,6 +75,41 @@ export function mountExperience(d, root = document.getElementById('app')) {
   };
   tickCounter();
   const counterInterval = breakdownEl ? setInterval(tickCounter, 60000) : null;
+  const animateCount = (el, target, duration = 1300) => {
+    const start = performance.now();
+    const step = now => {
+      const p = Math.min(1, (now - start) / duration);
+      el.textContent = Math.round(target * (1 - (1 - p) ** 3)).toLocaleString('pt-BR');
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  let counterAnimated = false;
+  const revealCounter = () => {
+    if (counterAnimated || reducedMotion) return;
+    counterAnimated = true;
+    [root.querySelector('.days-number'), ...root.querySelectorAll('.counter-breakdown strong')].forEach(el => {
+      if (!el) return;
+      const target = parseInt(el.textContent.replace(/\D/g, ''), 10);
+      if (!Number.isFinite(target)) return;
+      el.textContent = '0'; animateCount(el, target);
+    });
+  };
+  const revealTargets = [...root.querySelectorAll('.gift-section')];
+  let sectionObserver = null;
+  if (revealTargets.length && 'IntersectionObserver' in window && !reducedMotion) {
+    sectionObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        if (entry.target.classList.contains('counter-section')) revealCounter();
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: .2, rootMargin: '0px 0px -10% 0px' });
+    revealTargets.forEach(el => sectionObserver.observe(el));
+  } else {
+    revealTargets.forEach(el => el.classList.add('in-view'));
+  }
   const stopOpening = installOpening(root, { musicEl, onReveal: () => {
     if (musicButton) musicButton.hidden = false;
     try { localStorage.setItem('cda-visited-' + d.id, '1'); } catch {}
@@ -99,8 +140,10 @@ export function mountExperience(d, root = document.getElementById('app')) {
     musicButton.onclick = () => musicEl.paused ? play(musicEl) : musicEl.pause();
   }
   root.querySelector('#answer').onclick = () => {
+    vibrate(16);
     root.querySelector('#before-answer').hidden = true; const after = root.querySelector('#after-answer'); after.hidden = false; after.tabIndex = -1; after.focus();
   };
+  root.querySelectorAll('.sealed').forEach(el => el.addEventListener('toggle', () => { if (el.open) vibrate(10); }));
   const showPlace = i => {
     const p = places[i], lat = Number(p.lat), lng = Number(p.lng);
     const bbox = [Math.max(-180, lng - .015), Math.max(-90, lat - .01), Math.min(180, lng + .015), Math.min(90, lat + .01)].join(',');
@@ -108,6 +151,6 @@ export function mountExperience(d, root = document.getElementById('app')) {
     root.querySelector('#place-view').innerHTML = `<iframe title="Mapa: ${esc(p.name)}" src="${esc(src)}" loading="lazy" referrerpolicy="no-referrer"></iframe><h3>${esc(p.name)}</h3><span class="date-caption">${esc(dateText(p.date))}</span><p class="prose">${esc(p.memory)}</p>${photo(p.photo, p.name)}<a class="map-link" href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}" target="_blank" rel="noopener noreferrer">Abrir mapa ↗</a>`;
     root.querySelectorAll('[data-place]').forEach(b => { b.classList.toggle('selected', Number(b.dataset.place) === i); b.setAttribute('aria-pressed', String(Number(b.dataset.place) === i)); });
   };
-  if (places.length) { showPlace(0); root.querySelectorAll('[data-place]').forEach(b => b.onclick = () => showPlace(Number(b.dataset.place))); }
-  return () => { if (disposed) return; disposed = true; stopOpening(); if (counterInterval) clearInterval(counterInterval); root.querySelector('#spotify-slot')?.replaceChildren(); root.querySelector('#youtube-slot')?.replaceChildren(); allMedia.forEach(el => { el.pause(); el.removeAttribute('src'); el.load(); }); };
+  if (places.length) { showPlace(0); root.querySelectorAll('[data-place]').forEach(b => b.onclick = () => { vibrate(8); showPlace(Number(b.dataset.place)); }); }
+  return () => { if (disposed) return; disposed = true; stopOpening(); if (counterInterval) clearInterval(counterInterval); sectionObserver?.disconnect(); root.querySelector('#spotify-slot')?.replaceChildren(); root.querySelector('#youtube-slot')?.replaceChildren(); allMedia.forEach(el => { el.pause(); el.removeAttribute('src'); el.load(); }); };
 }
