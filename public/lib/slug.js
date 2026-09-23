@@ -1,4 +1,4 @@
-export function slugify(recipient, randomSuffix = () => Math.random().toString(36).slice(2, 8)) {
+export function slugify(recipient, randomSuffix = () => crypto.randomUUID().replaceAll('-', '')) {
   const base = String(recipient || '')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .toLowerCase()

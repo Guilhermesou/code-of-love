@@ -3,5 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "node server.js", "start": "node server.js", "test": "node --test", "check": "node --check public/app.js && node --check public/experience.js && node --check public/model.js && node --check public/opening.js && node --check public/shared.js && node --check public/lib/cloud.js && node --check public/lib/slug.js" }
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "node --test",
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.5",
+    "jsdom": "^29.1.1"
+  }
 }

@@ -1,3 +1,5 @@
+import { getGameContent } from './game-model.js';
+import { installGames } from './games.js';
 import { parseMusic } from './music.js';
 import { installOpening } from './opening.js';
 // This function is self-contained so the downloaded gift works without the editor.
@@ -12,6 +14,8 @@ export function mountExperience(d, root = document.getElementById('app')) {
   const section = (label, content, cls = '') => `<section class="gift-section ${cls}"><p class="eyebrow">${label}</p>${content}</section>`;
   const chapter = (numeral, label) => `<div class="gift-section chapter-mark" aria-hidden="true"><span class="chapter-numeral">${numeral}</span><p class="chapter-label">${esc(label)}</p></div>`;
   const dateText = v => v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(v + 'T12:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const games = getGameContent(d);
+  const hasGames = games.quiz.length || games.memory.length || games.date.length;
   const date = d.dates[d.occasion];
   const today = new Date();
   const days = date ? Math.floor((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.parse(date + 'T00:00:00Z')) / 86400000) : null;
@@ -58,11 +62,13 @@ export function mountExperience(d, root = document.getElementById('app')) {
       ${places.length ? section('os nossos lugares', `<h2>Onde a vida nos encontrou.</h2><div class="place-tabs" role="group" aria-label="Escolha uma lembrança">${places.map((p, i) => `<button class="chip ${i === 0 ? 'selected' : ''}" data-place="${i}" aria-pressed="${i === 0}">${esc(p.name)}</button>`).join('')}</div><div id="place-view"></div>`) : ''}
       ${video ? section('um pedacinho de nós', `<h2>Para dar play na lembrança.</h2><video id="gift-video" controls playsinline preload="metadata" src="${esc(video)}"></video><p class="media-error" id="video-error" hidden>Não foi possível abrir este vídeo.</p>`) : ''}
       ${d.details ? section('o que eu continuo amando em você', `<div class="love-details">${d.details.split('\n').filter(x => x.trim()).map(x => `<p>${esc(x)}</p>`).join('')}</div>`) : ''}
+      ${hasGames ? section('para brincar juntos', '<h2>Uma pausa para sorrir.</h2><p class="helper">Brincadeiras no nosso ritmo. Você pode pular qualquer uma e continuar a história.</p><div id="games-root"></div>', 'games-section in-view') : ''}
       ${d.letter || voice ? section('de mim, para você', `${d.letter ? `<p class="prose declaration">${esc(d.letter)}</p><p class="signature">Com amor, ${esc(d.sender)}</p>` : ''}${voice ? `<div class="voice-note"><span>Na minha voz</span><audio id="gift-voice" controls preload="metadata" src="${esc(voice)}"></audio></div>` : ''}`) : ''}
       ${chapter('II', 'para sempre')}
       <section class="gift-ending"><p class="prose">${esc(ending)}</p><div id="before-answer"><h2>${esc(d.question || 'Vamos continuar escrevendo a nossa história?')}</h2><button class="primary" id="answer">${esc(d.answer || 'Sempre, meu amor')}</button></div><div id="after-answer" hidden><span class="ending-heart" aria-hidden="true">♡</span><h2>${esc(d.after || 'Ainda temos tanta coisa linda para viver.')}</h2></div></section>
       <footer class="gift-footer">&lt; Código do amor /&gt;</footer>
     </article></div>${music ? `<audio id="gift-music" loop preload="auto" src="${esc(music)}"></audio><button class="music-toggle chip" hidden>Tocar música</button>` : ''}<p id="gift-status" class="gift-status" role="status"></p></div>`;
+  const stopGames = installGames(d, root.querySelector('#games-root'));
   const gate = root.querySelector('.gift-gate'), story = root.querySelector('.gift-story');
   const musicEl = root.querySelector('#gift-music'), voiceEl = root.querySelector('#gift-voice'), videoEl = root.querySelector('#gift-video');
   const musicButton = root.querySelector('.music-toggle');
@@ -173,5 +179,5 @@ export function mountExperience(d, root = document.getElementById('app')) {
     root.querySelectorAll('[data-place]').forEach(b => { b.classList.toggle('selected', Number(b.dataset.place) === i); b.setAttribute('aria-pressed', String(Number(b.dataset.place) === i)); });
   };
   if (places.length) { showPlace(0); root.querySelectorAll('[data-place]').forEach(b => b.onclick = () => { vibrate(8); showPlace(Number(b.dataset.place)); }); }
-  return () => { if (disposed) return; disposed = true; stopOpening(); if (counterInterval) clearInterval(counterInterval); sectionObserver?.disconnect(); root.querySelector('#spotify-slot')?.replaceChildren(); root.querySelector('.youtube-player')?.remove(); allMedia.forEach(el => { el.pause(); el.removeAttribute('src'); el.load(); }); };
+  return () => { if (disposed) return; disposed = true; stopGames(); stopOpening(); if (counterInterval) clearInterval(counterInterval); sectionObserver?.disconnect(); root.querySelector('#spotify-slot')?.replaceChildren(); root.querySelector('.youtube-player')?.remove(); allMedia.forEach(el => { el.pause(); el.removeAttribute('src'); el.load(); }); };
 }
